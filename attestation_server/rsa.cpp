@@ -3,10 +3,12 @@
 #include <CkPfxW.h>
 #include <CkPrivateKeyW.h>
 
-int main(void)
-    {
-    // This example assumes the Chilkat API to have been previously unlocked.
+std::string signData(std::string data) {
+	// This example assumes the Chilkat API to have been previously unlocked.
     // See Global Unlock Sample for sample code.
+
+	std::wstring widestr = std::wstring(data.begin(), data.end());
+	const wchar_t * strData = widestr.c_str();
 
     CkRsaW rsa;
 
@@ -15,14 +17,14 @@ int main(void)
     bool success = pfx.LoadPfxFile(L"attst-server.p12",L"qwerty");
     if (success != true) {
         wprintf(L"%s\n",pfx.lastErrorText());
-        return 1;
+        //return 1;
     }
 
     // Get the default private key.
     CkPrivateKeyW *privKey = pfx.GetPrivateKey(0);
     if (pfx.get_LastMethodSuccess() != true) {
         wprintf(L"%s\n",pfx.lastErrorText());
-        return 1;
+        //return 1;
     }
 
     // Import the private key into the RSA component:
@@ -30,7 +32,7 @@ int main(void)
     if (success != true) {
         wprintf(L"%s\n",rsa.lastErrorText());
         delete privKey;
-        return 1;
+        //return 1;
     }
 
     delete privKey;
@@ -50,13 +52,29 @@ int main(void)
     // use big-endian.
     rsa.put_LittleEndian(false);
 
-    const wchar_t *strData = L"This is the string to be signed.";
+    //const wchar_t *strData = L"This is the string to be signed.";
 
     // Sign the string using the sha-256 hash algorithm.
     // Other valid choices are "sha-1", "md2" and "md5".
     const wchar_t *base64Sig = rsa.signStringENC(strData,L"sha-256");
 
-    std::wcout << base64Sig << std::endl;
+    //std::wcout << base64Sig << std::endl;
 
-    std::wcout << L"Success\n" << std::endl;
-    }
+    //std::wcout << L"Success\n" << std::endl;
+
+    // Your wchar_t*
+	std::wstring ws(base64Sig);
+	// your new String
+	std::string base64SigStr(ws.begin(), ws.end());
+
+    return base64SigStr;
+}
+
+int main(void) {
+    std::string base64Sig = signData("This is the string to be signed");
+
+	std::cout << base64Sig << std::endl;
+	std::cout << "Success\n" << std::endl;  
+
+    return 0;
+}
