@@ -6,12 +6,33 @@
 #include <CkPfxW.h>
 #include <CkPrivateKeyW.h>
 #include <iostream>
+#include <fstream>
 #include <ctime>
 
 #define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
 // #define REDIS_CONFIG_FILE_PATH L"/home/"
 #define ATTESTATION_KEY_STORE L"/home/attestation_server/attst-server.p12"
 #define ATTESTATION_KEY_STORE_PASSWORD L"qwerty"
+
+#define MR_ENCLAVE_FILE "/home/attestation_server/mrenclave"
+
+std::string readMrEnclave() {
+  std::fstream newfile;
+
+  newfile.open(MR_ENCLAVE_FILE, std::ios::in);
+    if (newfile.is_open()) {
+      
+      std::string tp;
+      getline(newfile, tp);
+
+      newfile.close();
+
+      return tp;
+
+    } else {
+      throw 3321;
+    }
+}
 
 std::string signData(std::string data) {
 
@@ -104,19 +125,40 @@ int main(void) {
   svr.Get("/attest", [](const httplib::Request &, httplib::Response &res) {
   
   	try {
-  		std::string hash = hashFile(REDIS_SERVER_BINARY_PATH);
-    	std::string signedData = signData(hash);
+  		std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
+    	std::string redisServerSigned = signData(redisServerHash);
+      
+      std::string mrEnclave = readMrEnclave();
+      std::string mrEnclaveSigned = signData(mrEnclave);
 
+      // Pretty Print Response
     	std::string response;
-   		response.append("{\r\n");
-    	response.append("\t\"filename\": \"");
+   		response.append("{\r\n\t\"attestationQuote\": [\r\n");
+
+      // Redis Server Object
+      response.append("\t\t{\r\n");
+    	response.append("\t\t\t\"filename\": \"");
       response.append(REDIS_SERVER_BINARY_PATH);
       response.append("\",\r\n");
-    	response.append("\t\"sha256\": \"");
-    	response.append(hash);
-    	response.append("\",\r\n\t\"signature\": \"");
-    	response.append(signedData);
-    	response.append("\"\r\n}");
+    	response.append("\t\t\t\"hash\": \"");
+    	response.append(redisServerHash);
+    	response.append("\",\r\n\t\t\t\"signature\": \"");
+    	response.append(redisServerSigned);
+    	response.append("\"\r\n\t\t},\r\n");
+
+      // Mr Enclave Object
+      response.append("\t\t{\r\n");
+      response.append("\t\t\t\"filename\": \"");
+      response.append(MR_ENCLAVE_FILE);
+      response.append("\",\r\n");
+      response.append("\t\t\t\"hash\": \"");
+      response.append(mrEnclave);
+      response.append("\",\r\n\t\t\t\"signature\": \"");
+      response.append(mrEnclaveSigned);
+      response.append("\"\r\n\t\t}\r\n");
+
+      response.append("\t]\r\n");
+      response.append("}");
 
       // current date/time based on current system
       time_t now = time(0);
@@ -125,9 +167,20 @@ int main(void) {
       std::string dt = ctime(&now);
       dt = dt.substr(0, dt.length() - 1); // remove newline at the end of datetime 
 
+      // Logging
     	std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
-    	std::cout << "\t file.txt: " << hash << std::endl;
-    	std::cout << "\t sig: " << signedData << std::endl;
+    	
+      // Redis Server Object
+      std::cout << "\t filename: " << REDIS_SERVER_BINARY_PATH << std::endl;
+      std::cout << "\t hash: " << redisServerHash << std::endl;
+    	std::cout << "\t sig: " << redisServerSigned << std::endl;
+      
+      std::cout << "\t ---" << std::endl;
+
+      // Mr Enclave Object
+      std::cout << "\t filename: " << MR_ENCLAVE_FILE << std::endl;
+      std::cout << "\t hash: " << mrEnclave << std::endl;
+      std::cout << "\t sig: " << mrEnclaveSigned << std::endl;
     	std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
 
     	res.set_content(response, "application/json");
@@ -149,6 +202,9 @@ int main(void) {
     		case 6456:
     			response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
     			break;
+        case 3321:
+          response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
+          break;
     		default:
     			response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
    		}
