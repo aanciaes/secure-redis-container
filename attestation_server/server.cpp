@@ -6,6 +6,7 @@
 #include <CkPfxW.h>
 #include <CkPrivateKeyW.h>
 #include <iostream>
+#include <ctime>
 
 std::string signData(std::string data) {
 
@@ -16,7 +17,7 @@ std::string signData(std::string data) {
 
   // Load the ..p12
   CkPfxW pfx;
-  bool success = pfx.LoadPfxFile(L"attst-server.p12",L"qwerty");
+  bool success = pfx.LoadPfxFile(L"/home/attestation_server/attst-server.p12",L"qwerty");
   if (success != true) {
     throw 5477;
   }
@@ -110,10 +111,17 @@ int main(void) {
     	response.append(signedData);
     	response.append("\"\r\n}");
 
-    	std::cout << "--- Started Attestation Procedure ---" << std::endl;
+      // current date/time based on current system
+      time_t now = time(0);
+   
+      // convert now to string form
+      std::string dt = ctime(&now);
+      dt = dt.substr(0, dt.length() - 1); // remove newline at the end of datetime 
+
+    	std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
     	std::cout << "\t file.txt: " << hash << std::endl;
     	std::cout << "\t sig: " << signedData << std::endl;
-    	std::cout << "--- End of Attestation Procedure ---" << std::endl;
+    	std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
 
     	res.set_content(response, "application/json");
   	} catch (int errorCode) {

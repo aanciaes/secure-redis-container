@@ -2,9 +2,7 @@
 
 ## How to Compile
 
-Run `docker run -it -p 8080:8080 -v ~/Desktop/thesis/attestation_server:/home --name compiler sconecuratedimages/crosscompilers`
-
-Run `docker exec -i -t compiler /bin/sh`
+Run `docker run --rm -it -p 8080:8080 -v ~/Desktop/thesis/attestation_server:/home --name compiler sconecuratedimages/crosscompilers`
 
 Run `cd /home/attestation_server`
 
@@ -14,4 +12,4 @@ Run `exit`
 
 Run `docker build -t attst .`
 
-Run `docker run -i -t -p 8080:8080 attst`
+Run `docker run --rm -i -t -p 8080:8080 attst`

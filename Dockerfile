@@ -1,7 +1,5 @@
 FROM sconecuratedimages/apps:redis-6-alpine
 
-COPY sha256thesis /home/sha256thesis
-COPY httpd /home/httpd
 COPY attestation_server /home/attestation_server
 COPY start.sh /home/start.sh
 
