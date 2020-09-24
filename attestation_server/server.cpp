@@ -19,19 +19,19 @@
 std::string readMrEnclave() {
   std::fstream newfile;
 
-  newfile.open(MR_ENCLAVE_FILE, std::ios::in);
-    if (newfile.is_open()) {
-      
-      std::string tp;
-      getline(newfile, tp);
+  newfile.open(MR_ENCLAVE_FILE, std::ios:: in );
+  if (newfile.is_open()) {
 
-      newfile.close();
+    std::string tp;
+    getline(newfile, tp);
 
-      return tp;
+    newfile.close();
 
-    } else {
-      throw 3321;
-    }
+    return tp;
+
+  } else {
+    throw 3321;
+  }
 }
 
 std::string signData(std::string data) {
@@ -49,13 +49,13 @@ std::string signData(std::string data) {
   }
 
   // Get the default private key.
-  CkPrivateKeyW *privKey = pfx.GetPrivateKey(0);
+  CkPrivateKeyW * privKey = pfx.GetPrivateKey(0);
   if (pfx.get_LastMethodSuccess() != true) {
     throw 6455;
   }
 
   // Import the private key into the RSA component:
-  success = rsa.ImportPrivateKeyObj(*privKey);
+  success = rsa.ImportPrivateKeyObj( * privKey);
   if (success != true) {
     delete privKey;
     throw 6456;
@@ -77,7 +77,7 @@ std::string signData(std::string data) {
 
   // Sign the string using the sha-256 hash algorithm.
   // Other valid choices are "sha-1", "md2" and "md5".
-  const wchar_t *base64Sig = rsa.signStringENC(strData, L"sha-256");
+  const wchar_t * base64Sig = rsa.signStringENC(strData, L"sha-256");
 
   // Convert to string
   std::wstring ws(base64Sig);
@@ -86,34 +86,34 @@ std::string signData(std::string data) {
   return base64SigStr;
 }
 
-std::string hashFile (std::string path) {
-	const char * filePath = path.c_str();
+std::string hashFile(std::string path) {
+  const char * filePath = path.c_str();
 
-	CkCrypt2 crypt;
+  CkCrypt2 crypt;
 
-    // Choose the hash algorithm.
-    // Can be  "sha1", "sha256", "sha384", "sha512", "md2", "md5", "haval", "ripemd128", "ripemd160","ripemd256", or "ripemd320".
-    crypt.put_HashAlgorithm("sha256");
+  // Choose the hash algorithm.
+  // Can be  "sha1", "sha256", "sha384", "sha512", "md2", "md5", "haval", "ripemd128", "ripemd160","ripemd256", or "ripemd320".
+  crypt.put_HashAlgorithm("sha256");
 
-    CkByteData hashBytes;
-    bool success;
-    success = crypt.HashFile(filePath, hashBytes);
+  CkByteData hashBytes;
+  bool success;
+  success = crypt.HashFile(filePath, hashBytes);
 
-    if (!success) {
-    	throw 43552;
-    }
-    
-    CkStringBuilder sb;
-    sb.AppendEncoded(hashBytes,"hex");
+  if (!success) {
+    throw 43552;
+  }
 
-    std::string hash = sb.getAsString();
-    
-    // convert string to lower case
-    std::for_each(hash.begin(), hash.end(), [](char & c) {
-        c = ::tolower(c);
-    });
+  CkStringBuilder sb;
+  sb.AppendEncoded(hashBytes, "hex");
 
-    return hash;
+  std::string hash = sb.getAsString();
+
+  // convert string to lower case
+  std::for_each(hash.begin(), hash.end(), [](char & c) {
+    c = ::tolower(c);
+  });
+
+  return hash;
 }
 
 int main(void) {
@@ -122,39 +122,39 @@ int main(void) {
 
   httplib::Server svr;
 
-  svr.Get("/attest", [](const httplib::Request & req, httplib::Response &res) {
-  
-  	try {
+  svr.Get("/attest", [](const httplib::Request & req, httplib::Response & res) {
 
-  		if (!req.has_param("nonce")) {
-      		throw 2973;
-    	}
+    try {
 
-    	std::string nonceStr = req.get_param_value("nonce");
-    	std::cout << nonceStr << std::endl;
+      if (!req.has_param("nonce")) {
+        throw 2973;
+      }
 
-    	long nonce = std::stol(nonceStr);
+      std::string nonceStr = req.get_param_value("nonce");
+      std::cout << nonceStr << std::endl;
 
-  		std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
-    	std::string redisServerSigned = signData(redisServerHash);
-      
+      long nonce = std::stol(nonceStr);
+
+      std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
+      std::string redisServerSigned = signData(redisServerHash);
+
       std::string mrEnclave = readMrEnclave();
       std::string mrEnclaveSigned = signData(mrEnclave);
 
       // Pretty Print Response
-    	std::string response;
-   		response.append("{\r\n\t\"quote\": {\r\n\t\t\"challenges\": [\r\n");
+      std::string response;
+      response.append("{\r\n\t\"quote\": {\r\n\t\t\"challenges\": [\r\n");
 
       // Redis Server Object
       response.append("\t\t\t{\r\n");
-    	response.append("\t\t\t\t\"filename\": \"");
+      response.append("\t\t\t\t\"filename\": \"");
       response.append(REDIS_SERVER_BINARY_PATH);
       response.append("\",\r\n");
-    	response.append("\t\t\t\t\"hash\": \"");
-    	response.append(redisServerHash);
-    	response.append("\",\r\n\t\t\t\t\"signature\": \"");
-    	response.append(redisServerSigned);
-    	response.append("\"\r\n\t\t\t},\r\n");
+      response.append("\t\t\t\t\"hash\": \"");
+      response.append(redisServerHash);
+      response.append("\",\r\n\t\t\t\t\"signature\": \"");
+      response.append(redisServerSigned);
+      response.append("\"\r\n\t\t\t},\r\n");
 
       // Mr Enclave Object
       response.append("\t\t\t{\r\n");
@@ -170,7 +170,7 @@ int main(void) {
       // nonce
       response.append("\t\t],\r\n");
       response.append("\t\t\"nonce\": ");
-      response.append(std::to_string((nonce+1)));
+      response.append(std::to_string((nonce + 1)));
       response.append(",\r\n");
 
       // complete quote signature
@@ -182,68 +182,68 @@ int main(void) {
 
       // current date/time based on current system
       time_t now = time(0);
-   
+
       // convert now to string form
-      std::string dt = ctime(&now);
+      std::string dt = ctime( & now);
       dt = dt.substr(0, dt.length() - 1); // remove newline at the end of datetime 
 
       // Logging
-    	std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
-    	
+      std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
+
       // Redis Server Object
       std::cout << "\t filename: " << REDIS_SERVER_BINARY_PATH << std::endl;
       std::cout << "\t hash: " << redisServerHash << std::endl;
-    	std::cout << "\t sig: " << redisServerSigned << std::endl;
-      
+      std::cout << "\t sig: " << redisServerSigned << std::endl;
+
       std::cout << "\t ---" << std::endl;
 
       // Mr Enclave Object
       std::cout << "\t filename: " << MR_ENCLAVE_FILE << std::endl;
       std::cout << "\t hash: " << mrEnclave << std::endl;
       std::cout << "\t sig: " << mrEnclaveSigned << std::endl;
-    	std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
+      std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
 
-    	res.set_content(response, "application/json");
-  	} catch (int errorCode) {
+      res.set_content(response, "application/json");
+    } catch (int errorCode) {
 
-  		std::string response;
-   		response.append("{\r\n");
+      std::string response;
+      response.append("{\r\n");
 
-   		switch (errorCode) {
-   			case 43552:
-    			response.append("\t\"error\": \"An unexpected error occured while hashing the file\",\r\n");
-    			res.status = 500;
-    			break;
-    		case 5477:
-    			response.append("\t\"error\": \"An unexpected error occured while loading attestation keystore\",\r\n");
-    			res.status = 500;
-    			break;
-    		case 6455:
-    			response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
-    			res.status = 500;
-    			break;
-    		case 6456:
-    			response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
-    			res.status = 500;
-    			break;
-    		case 2973:
-    			response.append("\t\"error\": \"No nonce challenge was provided. Please provide a nonce\",\r\n");
-    			res.status = 400;
-    			break;
-        	case 3321:
-          		response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
-          		res.status = 500;
-          		break;
-    		default:
-    			response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
-   		}
-   		
-   		response.append("\r\n\t\"errorCode\": \"");
-    	response.append(std::to_string(errorCode));
-    	response.append("\"\r\n}");
+      switch (errorCode) {
+      case 43552:
+        response.append("\t\"error\": \"An unexpected error occured while hashing the file\",\r\n");
+        res.status = 500;
+        break;
+      case 5477:
+        response.append("\t\"error\": \"An unexpected error occured while loading attestation keystore\",\r\n");
+        res.status = 500;
+        break;
+      case 6455:
+        response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
+        res.status = 500;
+        break;
+      case 6456:
+        response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
+        res.status = 500;
+        break;
+      case 2973:
+        response.append("\t\"error\": \"No nonce challenge was provided. Please provide a nonce\",\r\n");
+        res.status = 400;
+        break;
+      case 3321:
+        response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
+        res.status = 500;
+        break;
+      default:
+        response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
+      }
 
-  		res.set_content(response, "application/json");
-  	}
+      response.append("\r\n\t\"errorCode\": \"");
+      response.append(std::to_string(errorCode));
+      response.append("\"\r\n}");
+
+      res.set_content(response, "application/json");
+    }
   });
 
   std::cout << "Server started at 0.0.0.0 port 8080" << std::endl;
