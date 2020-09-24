@@ -8,6 +8,11 @@
 #include <iostream>
 #include <ctime>
 
+#define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
+// #define REDIS_CONFIG_FILE_PATH L"/home/"
+#define ATTESTATION_KEY_STORE L"/home/attestation_server/attst-server.p12"
+#define ATTESTATION_KEY_STORE_PASSWORD L"qwerty"
+
 std::string signData(std::string data) {
 
   std::wstring widestr = std::wstring(data.begin(), data.end());
@@ -17,7 +22,7 @@ std::string signData(std::string data) {
 
   // Load the ..p12
   CkPfxW pfx;
-  bool success = pfx.LoadPfxFile(L"/home/attestation_server/attst-server.p12",L"qwerty");
+  bool success = pfx.LoadPfxFile(ATTESTATION_KEY_STORE, ATTESTATION_KEY_STORE_PASSWORD);
   if (success != true) {
     throw 5477;
   }
@@ -51,9 +56,9 @@ std::string signData(std::string data) {
 
   // Sign the string using the sha-256 hash algorithm.
   // Other valid choices are "sha-1", "md2" and "md5".
-  const wchar_t *base64Sig = rsa.signStringENC(strData,L"sha-256");
+  const wchar_t *base64Sig = rsa.signStringENC(strData, L"sha-256");
 
-  // COnvert to string
+  // Convert to string
   std::wstring ws(base64Sig);
   std::string base64SigStr(ws.begin(), ws.end());
 
@@ -99,12 +104,14 @@ int main(void) {
   svr.Get("/attest", [](const httplib::Request &, httplib::Response &res) {
   
   	try {
-  		std::string hash = hashFile("/home/attestation_server/file.txt");
+  		std::string hash = hashFile(REDIS_SERVER_BINARY_PATH);
     	std::string signedData = signData(hash);
 
     	std::string response;
    		response.append("{\r\n");
-    	response.append("\t\"filename\": \"/home/attestation_server/file.txt\",\r\n");
+    	response.append("\t\"filename\": \"");
+      response.append(REDIS_SERVER_BINARY_PATH);
+      response.append("\",\r\n");
     	response.append("\t\"sha256\": \"");
     	response.append(hash);
     	response.append("\",\r\n\t\"signature\": \"");
