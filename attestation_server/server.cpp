@@ -122,9 +122,19 @@ int main(void) {
 
   httplib::Server svr;
 
-  svr.Get("/attest", [](const httplib::Request &, httplib::Response &res) {
+  svr.Get("/attest", [](const httplib::Request & req, httplib::Response &res) {
   
   	try {
+
+  		if (!req.has_param("nonce")) {
+      		throw 2973;
+    	}
+
+    	std::string nonceStr = req.get_param_value("nonce");
+    	std::cout << nonceStr << std::endl;
+
+    	long nonce = std::stol(nonceStr);
+
   		std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
     	std::string redisServerSigned = signData(redisServerHash);
       
@@ -133,31 +143,41 @@ int main(void) {
 
       // Pretty Print Response
     	std::string response;
-   		response.append("{\r\n\t\"attestationQuote\": [\r\n");
+   		response.append("{\r\n\t\"quote\": {\r\n\t\t\"challenges\": [\r\n");
 
       // Redis Server Object
-      response.append("\t\t{\r\n");
-    	response.append("\t\t\t\"filename\": \"");
+      response.append("\t\t\t{\r\n");
+    	response.append("\t\t\t\t\"filename\": \"");
       response.append(REDIS_SERVER_BINARY_PATH);
       response.append("\",\r\n");
-    	response.append("\t\t\t\"hash\": \"");
+    	response.append("\t\t\t\t\"hash\": \"");
     	response.append(redisServerHash);
-    	response.append("\",\r\n\t\t\t\"signature\": \"");
+    	response.append("\",\r\n\t\t\t\t\"signature\": \"");
     	response.append(redisServerSigned);
-    	response.append("\"\r\n\t\t},\r\n");
+    	response.append("\"\r\n\t\t\t},\r\n");
 
       // Mr Enclave Object
-      response.append("\t\t{\r\n");
-      response.append("\t\t\t\"filename\": \"");
+      response.append("\t\t\t{\r\n");
+      response.append("\t\t\t\t\"filename\": \"");
       response.append(MR_ENCLAVE_FILE);
       response.append("\",\r\n");
-      response.append("\t\t\t\"hash\": \"");
+      response.append("\t\t\t\t\"hash\": \"");
       response.append(mrEnclave);
-      response.append("\",\r\n\t\t\t\"signature\": \"");
+      response.append("\",\r\n\t\t\t\t\"signature\": \"");
       response.append(mrEnclaveSigned);
-      response.append("\"\r\n\t\t}\r\n");
+      response.append("\"\r\n\t\t\t}\r\n");
 
-      response.append("\t]\r\n");
+      // nonce
+      response.append("\t\t],\r\n");
+      response.append("\t\t\"nonce\": ");
+      response.append(std::to_string((nonce+1)));
+      response.append(",\r\n");
+
+      // complete quote signature
+      response.append("\t\t\"quoteSignature\": ");
+      response.append("\"Insert quote signature here. Challenges + nonce\"");
+      response.append("\r\n\t}\r\n");
+
       response.append("}");
 
       // current date/time based on current system
@@ -192,19 +212,28 @@ int main(void) {
    		switch (errorCode) {
    			case 43552:
     			response.append("\t\"error\": \"An unexpected error occured while hashing the file\",\r\n");
+    			res.status = 500;
     			break;
     		case 5477:
     			response.append("\t\"error\": \"An unexpected error occured while loading attestation keystore\",\r\n");
+    			res.status = 500;
     			break;
     		case 6455:
     			response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
+    			res.status = 500;
     			break;
     		case 6456:
     			response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
+    			res.status = 500;
     			break;
-        case 3321:
-          response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
-          break;
+    		case 2973:
+    			response.append("\t\"error\": \"No nonce challenge was provided. Please provide a nonce\",\r\n");
+    			res.status = 400;
+    			break;
+        	case 3321:
+          		response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
+          		res.status = 500;
+          		break;
     		default:
     			response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
    		}
@@ -214,7 +243,6 @@ int main(void) {
     	response.append("\"\r\n}");
 
   		res.set_content(response, "application/json");
-  		res.status = 500;
   	}
   });
 
