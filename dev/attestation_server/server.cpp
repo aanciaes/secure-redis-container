@@ -245,6 +245,6 @@ int main(void) {
     }
   });
 
-  std::cout << "Server started at 0.0.0.0 port 8080" << std::endl;
-  svr.listen("0.0.0.0", 8080);
+  std::cout << "Attestation Server Started at 0.0.0.0 port 8541" << std::endl;
+  svr.listen("0.0.0.0", 8541);
 }

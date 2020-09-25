@@ -6,7 +6,7 @@ The dev folder is supposed to be used to develop the attestation server. The pro
 
 ## Develpoment
 
-1. Run the cross-compiler with `docker run --rm -it -p 8080:8080 -v ~/Desktop/thesis/secure-redis/dev/attestation_server:/home/attestation_server --name compiler sconecuratedimages/crosscompilers`.
+1. Run the cross-compiler with `docker run --rm -it -p 8541:8541 -v ~/Desktop/thesis/secure-redis/dev/attestation_server:/home/attestation_server --name compiler sconecuratedimages/crosscompilers`.
 2. Run `cd /home/attestation_server` to navigate to the work directory..
 3. To compile the C++ code run: `g++ server.cpp -o server -I/home/attestation_server/include -L/home/attestation_server/lib -lchilkat-9.5.0 -static`.
 4. To test the compiled code run: `./server`.
@@ -15,7 +15,7 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 
 1. Exit the compiler container with `exit`.
 2. Build the image with `docker build -t secure-redis:dev .`
-3. Run the image: `docker run --rm --name dev_secure_redis -it -p 6379:6379 -p 8080:8080 secure-redis:dev`
+3. Run the image: `docker run --rm --name dev_secure_redis -it -p 6379:6379 -p 8541:8541 secure-redis:dev`
 
 
 ## Production
@@ -25,7 +25,7 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 To build the production image:
 
 1. `docker build -t secure-redis:prod .`
-2. To run: `docker run --rm --name secure_redis -it -p 6357:6357 -p 8080:8080 secure-redis:prod`
+2. To run: `docker run --rm --name secure_redis -it -p 6357:6357 -p 8541:8541 secure-redis:prod`
 
 ### Push to docker hub
 
@@ -42,7 +42,7 @@ If image is ready for production, build the prod tag and push:
 ### Running on Production Environment
 
 1. Login to docker
-2. `docker run --rm --name secure_redis -it -d -p 6357:6357 -p 8080:8080 --device=/dev/isgx -e SCONE_MODE=HW aanciaes/secure-redis:prod`
+2. `docker run --rm --name secure_redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW aanciaes/secure-redis:prod`
 
 **Notes:**
 
