@@ -27,7 +27,20 @@ To build the production image:
 1. `docker build -t secure-redis:prod .`
 2. To run: `docker run --rm --name secure_redis -it -p 6357:6357 -p 8080:8080 secure-redis:prod`
 
+### Push to docker hub
+
+1. Login to docker hub
+2. Build image with version as tag:
+3. `docker build -t aanciaes/secure-redis:0.1.1 .`
+4. `docker push aanciaes/secure-redis:0.1.1`
+
+If image is ready for production, build the prod tag and push:
+
+1. `docker build -t aanciaes/secure-redis:prod .`
+2. `docker push aanciaes/secure-redis:prod`
+
 **Notes:**
+
 1. The deployment on the cloud provider should be done by uploading the production image to the docker hub registry and pull from there to avoid any losses.
 2. Be aware of the redis ports with the docker run command as they may change in the `redis.conf`
 3. (Temporary) Be aware of the hard-coded paths and passwords when merging code from developement to production.
