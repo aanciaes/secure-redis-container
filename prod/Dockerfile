@@ -19,8 +19,6 @@ RUN mkdir -p /home/attestation_server
 
 COPY --from=compiler /home/attestation_server/attestation-server /home/attestation_server/attestation-server
 
-RUN echo 'asdasd' > /home/attestation_server/file.txt
-
 COPY ./attestation_server/attst-server.p12 /home/attestation_server/attst-server.p12
 
 ### Redis Server ###

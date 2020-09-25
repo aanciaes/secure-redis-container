@@ -9,8 +9,8 @@
 #include <fstream>
 #include <ctime>
 
-#define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
-// #define REDIS_CONFIG_FILE_PATH L"/home/"
+// #define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
+#define REDIS_CONFIG_FILE_PATH "/usr/local/etc/redis/redis.conf"
 #define ATTESTATION_KEY_STORE L"/home/attestation_server/attst-server.p12"
 #define ATTESTATION_KEY_STORE_PASSWORD L"qwerty"
 
@@ -134,7 +134,7 @@ int main(void) {
 
       long nonce = std::stol(nonceStr);
 
-      std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
+      std::string redisServerHash = hashFile(REDIS_CONFIG_FILE_PATH);
       std::string redisServerSigned = signData(redisServerHash);
 
       std::string mrEnclave = readMrEnclave();
@@ -147,7 +147,7 @@ int main(void) {
       // Redis Server Object
       response.append("\t\t\t{\r\n");
       response.append("\t\t\t\t\"filename\": \"");
-      response.append(REDIS_SERVER_BINARY_PATH);
+      response.append(REDIS_CONFIG_FILE_PATH);
       response.append("\",\r\n");
       response.append("\t\t\t\t\"hash\": \"");
       response.append(redisServerHash);
@@ -190,7 +190,7 @@ int main(void) {
       std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
 
       // Redis Server Object
-      std::cout << "\t filename: " << REDIS_SERVER_BINARY_PATH << std::endl;
+      std::cout << "\t filename: " << REDIS_CONFIG_FILE_PATH << std::endl;
       std::cout << "\t hash: " << redisServerHash << std::endl;
       std::cout << "\t sig: " << redisServerSigned << std::endl;
 
