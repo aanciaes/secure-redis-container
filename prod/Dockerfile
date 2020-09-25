@@ -14,13 +14,24 @@ RUN g++ server.cpp -o attestation-server -I/home/attestation_server/include -L/h
 
 FROM sconecuratedimages/apps:redis-6-alpine
 
+### Attestation Server ###
 RUN mkdir -p /home/attestation_server
 
-COPY --from=compiler /home/attestation_server/server /home/attestation_server/server
+COPY --from=compiler /home/attestation_server/attestation-server /home/attestation_server/attestation-server
 
 RUN echo 'asdasd' > /home/attestation_server/file.txt
 
 COPY ./attestation_server/attst-server.p12 /home/attestation_server/attst-server.p12
+
+### Redis Server ###
+# Copy config file
+COPY ./redis/redis.conf /usr/local/etc/redis/redis.conf
+
+# Copy TLS files
+COPY ./redis/tls/redis-server/thesis-redis-server.key /usr/local/etc/redis/redis.key
+COPY ./redis/tls/redis-server/thesis-redis-server.crt /usr/local/etc/redis/redis.crt
+COPY ./redis/tls/redis-server/thesis-redis-server.dh /usr/local/etc/redis/redis.dh
+COPY ./redis/tls/ca/thesis-ca.crt /usr/local/etc/redis/ca.crt
 
 COPY start.sh /home/start.sh
 

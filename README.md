@@ -25,7 +25,7 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 To build the production image:
 
 1. `docker build -t secure-redis:prod .`
-2. To run: `docker run --rm --name secure_redis -it -p 6379:6379 -p 8080:8080 secure-redis:prod`
+2. To run: `docker run --rm --name secure_redis -it -p 6357:6357 -p 8080:8080 secure-redis:prod`
 
 **Notes:**
 1. The deployment on the cloud provider should be done by uploading the production image to the docker hub registry and pull from there to avoid any losses.
