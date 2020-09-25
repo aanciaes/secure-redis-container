@@ -39,7 +39,7 @@ If image is ready for production, build the prod tag and push:
 1. `docker build -t aanciaes/secure-redis:prod .`
 2. `docker push aanciaes/secure-redis:prod`
 
-On the cloud provider pull image and run with:
+### Running on Production Environment
 
 1. Login to docker
 2. docker run --rm --name secure_redis -it -d -p 6357:6357 -p 8080:8080 --device=/dev/isgx -e SCONE_MODE=HW aanciaes/secure-redis:prod
