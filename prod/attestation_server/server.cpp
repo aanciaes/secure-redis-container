@@ -11,8 +11,8 @@
 
 // #define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
 #define REDIS_CONFIG_FILE_PATH "/usr/local/etc/redis/redis.conf"
-#define ATTESTATION_KEY_STORE L"/home/attestation_server/attst-server.p12"
-#define ATTESTATION_KEY_STORE_PASSWORD L"qwerty"
+#define ATTESTATION_KEY_STORE L"/home/attestation_server/attestation-identity-key.p12"
+#define ATTESTATION_KEY_STORE_PASSWORD L"thesis-manciaes"
 
 #define MR_ENCLAVE_FILE "/home/attestation_server/mrenclave"
 

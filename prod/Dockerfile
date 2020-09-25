@@ -19,7 +19,7 @@ RUN mkdir -p /home/attestation_server
 
 COPY --from=compiler /home/attestation_server/attestation-server /home/attestation_server/attestation-server
 
-COPY ./attestation_server/attst-server.p12 /home/attestation_server/attst-server.p12
+COPY ./attestation_server/attestation-identity-key.p12 /home/attestation_server/attestation-identity-key.p12
 
 ### Redis Server ###
 # Copy config file
