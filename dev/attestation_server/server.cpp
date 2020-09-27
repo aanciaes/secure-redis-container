@@ -140,7 +140,7 @@ int main(void) {
       std::string redisConfigHash = hashFile(REDIS_CONFIG_FILE_PATH);
       std::string redisConfigSigned = signData(redisConfigHash);
 
-	  std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
+	    std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
       std::string attestServerSigned = signData(attestServerHash);
 
       std::string redisMrEnclave = readMrEnclave(REDIS_MR_ENCLAVE_FILE);
