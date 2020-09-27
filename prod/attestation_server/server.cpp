@@ -9,7 +9,7 @@
 #include <fstream>
 #include <ctime>
 
-// #define REDIS_SERVER_BINARY_PATH "/home/attestation_server/file.txt"
+#define REDIS_SERVER_BINARY_PATH "/usr/local/bin/redis-server"
 #define REDIS_CONFIG_FILE_PATH "/usr/local/etc/redis/redis.conf"
 #define ATTESTATION_SERVER_BIN_PATH "/home/attestation_server/attestation-server"
 
@@ -137,6 +137,9 @@ int main(void) {
 
       long nonce = std::stol(nonceStr);
 
+      std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
+      std::string redisServerSigned = signData(redisServerHash);
+
       std::string redisConfigHash = hashFile(REDIS_CONFIG_FILE_PATH);
       std::string redisConfigSigned = signData(redisConfigHash);
 
@@ -153,6 +156,17 @@ int main(void) {
       std::string response;
       response.append("{\r\n\t\"quote\": {\r\n\t\t\"challenges\": [\r\n");
 
+      // Redis Server Object
+      response.append("\t\t\t{\r\n");
+      response.append("\t\t\t\t\"filename\": \"");
+      response.append(REDIS_SERVER_BINARY_PATH);
+      response.append("\",\r\n");
+      response.append("\t\t\t\t\"hash\": \"");
+      response.append(redisServerHash);
+      response.append("\",\r\n\t\t\t\t\"signature\": \"");
+      response.append(redisServerSigned);
+      response.append("\"\r\n\t\t\t},\r\n");
+
       // Redis Config Object
       response.append("\t\t\t{\r\n");
       response.append("\t\t\t\t\"filename\": \"");
@@ -162,6 +176,17 @@ int main(void) {
       response.append(redisConfigHash);
       response.append("\",\r\n\t\t\t\t\"signature\": \"");
       response.append(redisConfigSigned);
+      response.append("\"\r\n\t\t\t},\r\n");
+
+      // Redis Mr Enclave Object
+      response.append("\t\t\t{\r\n");
+      response.append("\t\t\t\t\"filename\": \"");
+      response.append(REDIS_MR_ENCLAVE_FILE);
+      response.append("\",\r\n");
+      response.append("\t\t\t\t\"hash\": \"");
+      response.append(redisMrEnclave);
+      response.append("\",\r\n\t\t\t\t\"signature\": \"");
+      response.append(redisMrEnclaveSigned);
       response.append("\"\r\n\t\t\t},\r\n");
 
       // Attestation Server Object
@@ -184,17 +209,6 @@ int main(void) {
       response.append(attstServerMrEnclave);
       response.append("\",\r\n\t\t\t\t\"signature\": \"");
       response.append(attstServerMrEnclaveSigned);
-      response.append("\"\r\n\t\t\t},\r\n");
-
-      // Redis Mr Enclave Object
-      response.append("\t\t\t{\r\n");
-      response.append("\t\t\t\t\"filename\": \"");
-      response.append(REDIS_MR_ENCLAVE_FILE);
-      response.append("\",\r\n");
-      response.append("\t\t\t\t\"hash\": \"");
-      response.append(redisMrEnclave);
-      response.append("\",\r\n\t\t\t\t\"signature\": \"");
-      response.append(redisMrEnclaveSigned);
       response.append("\"\r\n\t\t\t}\r\n");
 
       // nonce
