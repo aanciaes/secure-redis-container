@@ -15,7 +15,7 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 
 1. Exit the compiler container with `exit`.
 2. Build the image with `docker build -t secure-redis:dev .`
-3. Run the image: `docker run --rm --name dev_secure_redis -it -p 6379:6379 -p 8541:8541 secure-redis:dev`
+3. Run the image: `docker run --rm --name dev-secure-redis -it -p 6379:6379 -p 8541:8541 secure-redis:dev`
 
 
 ## Production
@@ -25,7 +25,7 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 To build the production image:
 
 1. `docker build -t secure-redis:prod .`
-2. To run: `docker run --rm --name secure_redis -it -p 6357:6357 -p 8541:8541 secure-redis:prod`
+2. To run: `docker run --rm --name secure-redis -it -p 6357:6357 -p 8541:8541 secure-redis:prod`
 
 ### Push to docker hub
 
@@ -42,7 +42,7 @@ If image is ready for production, build the prod tag and push:
 ### Running on Production Environment
 
 1. Login to docker
-2. `docker run --rm --name secure_redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW aanciaes/secure-redis:prod`
+2. `docker run --rm --name secure-redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW -e SCONE_FORK=1 aanciaes/secure-redis:prod`
 
 **Notes:**
 
