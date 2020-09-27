@@ -6,7 +6,7 @@ The dev folder is supposed to be used to develop the attestation server. The pro
 
 ## Develpoment
 
-1. Run the cross-compiler with `docker run --rm -it -p 8541:8541 -v ~/Desktop/thesis/secure-redis/dev/attestation_server:/home/attestation_server --name compiler sconecuratedimages/crosscompilers`.
+1. Run the cross-compiler with `docker run --rm -it -p 8541:8541 -v ~/Desktop/thesis/secure-redis-container/dev/attestation_server:/home/attestation_server --name compiler sconecuratedimages/crosscompilers`.
 2. Run `cd /home/attestation_server` to navigate to the work directory..
 3. To compile the C++ code run: `g++ server.cpp -o server -I/home/attestation_server/include -L/home/attestation_server/lib -lchilkat-9.5.0 -static`.
 4. To test the compiled code run: `./server`.
