@@ -5,9 +5,13 @@
 #include <CkRsaW.h>
 #include <CkPfxW.h>
 #include <CkPrivateKeyW.h>
+#include <CkBinData.h>
 #include <iostream>
 #include <fstream>
 #include <ctime>
+
+#define SEVER_ACCEPTED_USERNAME "redis-proxy-cd497e6b-10cf-4ed2-be63-18b6b16375f6"
+#define SEVER_ACCEPTED_PASSWORD "2grvTkqUhS7wE4R4WRjnuXTLzsxnAu"
 
 #define REDIS_SERVER_BINARY_PATH "/home/attestation_server/mock-redis-server"
 #define REDIS_CONFIG_FILE_PATH "/home/attestation_server/mock-redis.conf"
@@ -119,6 +123,35 @@ std::string hashFile(std::string path) {
   return hash;
 }
 
+void authenticateRequest(const httplib::Request & req) {
+	if (req.has_header("Authorization")) {
+        auto header = req.get_header_value("Authorization");
+
+        std::string delimiter = " ";
+        std::string auth = header.substr((header.find(delimiter) + 1), header.length());
+        
+        CkBinData bd;
+
+        bool success = bd.AppendEncoded(auth.c_str(),"base64");
+        if (!success) {
+        	throw 66233;
+        }
+
+        std::string decodedAuth = bd.getString("utf-8");
+
+        delimiter = ":";
+        std::string username = decodedAuth.substr(0, decodedAuth.find(delimiter));
+        std::string password = decodedAuth.substr((decodedAuth.find(delimiter) + 1), decodedAuth.length());
+
+        if (username != SEVER_ACCEPTED_USERNAME || password != SEVER_ACCEPTED_PASSWORD) {
+        	throw 49213;
+        }
+
+      } else {
+      	throw 32222;
+      }
+}
+
 int main(void) {
 
   using namespace httplib;
@@ -128,6 +161,7 @@ int main(void) {
   svr.Get("/attest", [](const httplib::Request & req, httplib::Response & res) {
 
     try {
+      authenticateRequest(req);
 
       if (!req.has_param("nonce")) {
         throw 2973;
@@ -277,6 +311,18 @@ int main(void) {
       case 3321:
         response.append("\t\"error\": \"An unexpected error occured while reading mr enclave file\",\r\n");
         res.status = 500;
+        break;
+      case 32222:
+        response.append("\t\"error\": \"No authorization header provided\",\r\n");
+        res.status = 401;
+        break;
+      case 66233:
+        response.append("\t\"error\": \"An unexpected error occured while decoding authorization header\",\r\n");
+        res.status = 500;
+        break;
+      case 49213:
+        response.append("\t\"error\": \"Authentication Failed\",\r\n");
+        res.status = 403;
         break;
       default:
         response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
