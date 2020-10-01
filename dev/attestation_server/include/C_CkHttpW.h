@@ -316,6 +316,8 @@ CK_C_VISIBLE_PUBLIC BOOL CkHttpW_HasRequestHeader(HCkHttpW cHandle, const wchar_
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_IsUnlocked(HCkHttpW cHandle);
 CK_C_VISIBLE_PUBLIC HCkJsonObjectW CkHttpW_LastJsonData(HCkHttpW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_LoadTaskCaller(HCkHttpW cHandle, HCkTaskW task);
+CK_C_VISIBLE_PUBLIC int CkHttpW_OcspCheck(HCkHttpW cHandle, const wchar_t *domain, int port);
+CK_C_VISIBLE_PUBLIC HCkTaskW CkHttpW_OcspCheckAsync(HCkHttpW cHandle, const wchar_t *domain, int port);
 CK_C_VISIBLE_PUBLIC int CkHttpW_ParseOcspReply(HCkHttpW cHandle, HCkBinDataW ocspReply, HCkJsonObjectW replyData);
 CK_C_VISIBLE_PUBLIC HCkHttpResponseW CkHttpW_PBinary(HCkHttpW cHandle, const wchar_t *verb, const wchar_t *url, HCkByteData byteData, const wchar_t *contentType, BOOL md5, BOOL gzip);
 CK_C_VISIBLE_PUBLIC HCkTaskW CkHttpW_PBinaryAsync(HCkHttpW cHandle, const wchar_t *verb, const wchar_t *url, HCkByteData byteData, const wchar_t *contentType, BOOL md5, BOOL gzip);
@@ -417,6 +419,7 @@ CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetOAuthRsaKey(HCkHttpW cHandle, HCkPrivateKeyW
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetPassword(HCkHttpW cHandle, HCkSecureStringW password);
 CK_C_VISIBLE_PUBLIC void CkHttpW_SetRequestHeader(HCkHttpW cHandle, const wchar_t *headerFieldName, const wchar_t *headerFieldValue);
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetSecurePassword(HCkHttpW cHandle, HCkSecureStringW password);
+CK_C_VISIBLE_PUBLIC void CkHttpW_SetSslCertRequirement(HCkHttpW cHandle, const wchar_t *reqName, const wchar_t *reqValue);
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetSslClientCert(HCkHttpW cHandle, HCkCertW cert);
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetSslClientCertPem(HCkHttpW cHandle, const wchar_t *pemDataOrPath, const wchar_t *pemPassword);
 CK_C_VISIBLE_PUBLIC BOOL CkHttpW_SetSslClientCertPfx(HCkHttpW cHandle, const wchar_t *pfxPath, const wchar_t *pfxPassword);

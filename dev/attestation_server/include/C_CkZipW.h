@@ -139,6 +139,9 @@ CK_C_VISIBLE_PUBLIC void  CkZipW_putTempDir(HCkZipW cHandle, const wchar_t *newV
 CK_C_VISIBLE_PUBLIC const wchar_t *CkZipW_tempDir(HCkZipW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkZipW_getTextFlag(HCkZipW cHandle);
 CK_C_VISIBLE_PUBLIC void  CkZipW_putTextFlag(HCkZipW cHandle, BOOL newVal);
+CK_C_VISIBLE_PUBLIC void CkZipW_getUncommonOptions(HCkZipW cHandle, HCkString retval);
+CK_C_VISIBLE_PUBLIC void  CkZipW_putUncommonOptions(HCkZipW cHandle, const wchar_t *newVal);
+CK_C_VISIBLE_PUBLIC const wchar_t *CkZipW_uncommonOptions(HCkZipW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkZipW_getVerboseLogging(HCkZipW cHandle);
 CK_C_VISIBLE_PUBLIC void  CkZipW_putVerboseLogging(HCkZipW cHandle, BOOL newVal);
 CK_C_VISIBLE_PUBLIC void CkZipW_getVersion(HCkZipW cHandle, HCkString retval);

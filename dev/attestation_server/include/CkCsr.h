@@ -279,6 +279,28 @@ class CK_VISIBLE_PUBLIC CkCsr  : public CkMultiByteBase
 	// ----------------------
 	// Methods
 	// ----------------------
+	// Adds a SAN value (Subject Alternative Name) to the CSR to be generated. This
+	// method can be called multiple times -- one per subject alternative name to be
+	// added.
+	// 
+	// The sanType specifies the type of SAN, and can be one of the following strings:
+	//     otherName
+	//     rfc822Name
+	//     dnsName
+	//     x400Address
+	//     directoryName
+	//     ediPartyName
+	//     uniformResourceIndicator
+	//     IPAddress
+	//     registeredID
+	// 
+	// The sanValue is the value. For example, if the sanType is "dsnName", the sanValue might be
+	// "example.com". If the sanType is "IPAddress", then the sanValue might be
+	// "69.12.122.63".
+	// 
+	bool AddSan(const char *sanType, const char *sanValue);
+
+
 	// Generate a CSR and return the binary DER in csrData. The privKey can be an RSA or
 	// ECDSA private key.
 	bool GenCsrBd(CkPrivateKey &privKey, CkBinData &csrData);

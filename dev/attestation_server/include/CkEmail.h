@@ -665,8 +665,16 @@ class CK_VISIBLE_PUBLIC CkEmail  : public CkMultiByteBase
 	void put_Sender(const char *newVal);
 
 	// Set to true if this email should be sent with a digital signature.
+	// 
+	// Note: Please be aware of the Apple Mail bug explained in the web page at the
+	// link below.
+	// 
 	bool get_SendSigned(void);
 	// Set to true if this email should be sent with a digital signature.
+	// 
+	// Note: Please be aware of the Apple Mail bug explained in the web page at the
+	// link below.
+	// 
 	void put_SendSigned(bool newVal);
 
 	// true if the email was received with one or more digital signatures, and if all
@@ -1139,8 +1147,7 @@ class CK_VISIBLE_PUBLIC CkEmail  : public CkMultiByteBase
 
 
 	// Attaches a MIME message to the email object. The attached MIME will be
-	// encapsulated in an message/rfc822 sub-part. To attach one email object to
-	// another, pass the output of GetMimeBinary to the input of this method.
+	// encapsulated in an message/rfc822 sub-part.
 	bool AttachMessage(CkByteData &mimeBytes);
 
 
@@ -2483,6 +2490,12 @@ class CK_VISIBLE_PUBLIC CkEmail  : public CkMultiByteBase
 	// Unpacks an HTML email into an HTML file and related files (images and style
 	// sheets). The links within the HTML are updated to point to the files unpacked
 	// and saved to disk.
+	// 
+	// Note: The UnpackHtml method extracts images that are actually contained within
+	// the email itself. If the HTML contains an "IMG" tag that just links to an image
+	// on the web (but the image data is not contained locally within the email), then
+	// the image is not unpacked (because it would need to be downloaded from the web).
+	// 
 	bool UnpackHtml(const char *unpackDir, const char *htmlFilename, const char *partsSubdir);
 
 

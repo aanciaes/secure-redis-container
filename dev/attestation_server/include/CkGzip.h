@@ -334,10 +334,6 @@ class CK_VISIBLE_PUBLIC CkGzip  : public CkClassWithCallbacks
 	// 
 	const char *inflateStringENC(const char *inString, const char *convertFromCharset, const char *inputEncoding);
 
-	// Returns true if the component has been unlocked.
-	bool IsUnlocked(void);
-
-
 	// Loads the caller of the task's async method.
 	bool LoadTaskCaller(CkTask &task);
 

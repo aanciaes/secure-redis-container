@@ -63,7 +63,7 @@ class CK_VISIBLE_PUBLIC CkFtp2  : public CkClassWithCallbacks
 	// Properties
 	// ----------------------
 	// When set to true, causes the currently running method to abort. Methods that
-	// always finish quickly (i.e.have no length file operations or network
+	// always finish quickly (i.e.have no lengthy file operations or network
 	// communications) are not affected. If no method is running, then this property is
 	// automatically reset to false when the next method is called. When the abort
 	// occurs, this property is reset to false. Both synchronous and asynchronous
@@ -71,7 +71,7 @@ class CK_VISIBLE_PUBLIC CkFtp2  : public CkClassWithCallbacks
 	// setting this property from a separate thread.)
 	bool get_AbortCurrent(void);
 	// When set to true, causes the currently running method to abort. Methods that
-	// always finish quickly (i.e.have no length file operations or network
+	// always finish quickly (i.e.have no lengthy file operations or network
 	// communications) are not affected. If no method is running, then this property is
 	// automatically reset to false when the next method is called. When the abort
 	// occurs, this property is reset to false. Both synchronous and asynchronous
@@ -4323,11 +4323,18 @@ class CK_VISIBLE_PUBLIC CkFtp2  : public CkClassWithCallbacks
 	bool SetSecurePassword(CkSecureString &password);
 
 
-	// Enforces a requirement on the FTP server's certificate. The reqName can be
-	// "SubjectDN", "SubjectCN", "IssuerDN", or "IssuerCN". The reqName specifies the part
-	// of the certificate, and the reqValue is the value that it must match (exactly). If
-	// the FTP server's certificate does not match, the SSL / TLS connection is
-	// aborted.
+	// Enforces a requirement on the server's certificate. The reqName can be one of the
+	// following:
+	//     SubjectDN
+	//     SubjectCN
+	//     IssuerDN
+	//     IssuerCN
+	//     SAN (added in v9.5.0.84)
+	// 
+	// The reqName specifies the part of the certificate, and the reqValue is the value that
+	// it must match exactly or with a wildcard (*). If the server's certificate does
+	// not match, the SSL / TLS connection is aborted.
+	// 
 	void SetSslCertRequirement(const char *reqName, const char *reqValue);
 
 

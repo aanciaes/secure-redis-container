@@ -104,6 +104,7 @@ CK_C_VISIBLE_PUBLIC BOOL CkTar_AddDirRoot(HCkTar cHandle, const char *dirPath);
 CK_C_VISIBLE_PUBLIC BOOL CkTar_AddDirRoot2(HCkTar cHandle, const char *rootPrefix, const char *rootPath);
 CK_C_VISIBLE_PUBLIC BOOL CkTar_AddFile(HCkTar cHandle, const char *path);
 CK_C_VISIBLE_PUBLIC BOOL CkTar_AddFile2(HCkTar cHandle, const char *filePath, const char *pathWithinTar);
+CK_C_VISIBLE_PUBLIC BOOL CkTar_ClearDirRootsAndFiles(HCkTar cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkTar_CreateDeb(HCkTar cHandle, const char *controlPath, const char *dataPath, const char *debPath);
 CK_C_VISIBLE_PUBLIC BOOL CkTar_GetDirRoot(HCkTar cHandle, int index, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const char *CkTar_getDirRoot(HCkTar cHandle, int index);

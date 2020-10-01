@@ -102,9 +102,6 @@ class CK_VISIBLE_PUBLIC CkHtmlToTextW  : public CkWideCharBase
 	// ----------------------
 	// Methods
 	// ----------------------
-	// Returns true if the component is already unlocked. Otherwise returns false.
-	bool IsUnlocked(void);
-
 	// Convenience method for reading a text file into a string. The character encoding
 	// of the text file is specified by srcCharset. Valid values, such as "iso-8895-1" or
 	// "utf-8" are listed at:List of Charsets

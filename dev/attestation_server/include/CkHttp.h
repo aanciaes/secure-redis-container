@@ -2164,6 +2164,27 @@ class CK_VISIBLE_PUBLIC CkHttp  : public CkClassWithCallbacks
 	bool LoadTaskCaller(CkTask &task);
 
 
+	// Gets the server certificate at a domain:port and then sends an OCSP request to
+	// the certificate's OCSP URL to determine if the certificate has been revoked.
+	// Returns the OCSP status, which has one of the following values:
+	//     -1: Unable to check. See the contents of the LastErrorText property for more
+	//     informaiton.
+	//     0: Good
+	//     1: Revoked
+	//     2: Unknown
+	int OcspCheck(const char *domain, int port);
+
+	// Gets the server certificate at a domain:port and then sends an OCSP request to
+	// the certificate's OCSP URL to determine if the certificate has been revoked.
+	// Returns the OCSP status, which has one of the following values:
+	//     -1: Unable to check. See the contents of the LastErrorText property for more
+	//     informaiton.
+	//     0: Good
+	//     1: Revoked
+	//     2: Unknown
+	CkTask *OcspCheckAsync(const char *domain, int port);
+
+
 	// Parses an OCSP reply. Returns the following possible integer values:
 	//     -1: The ocspReply does not contain a valid OCSP reply.
 	//     0: Successful - Response has valid confirmations..
@@ -2549,37 +2570,35 @@ class CK_VISIBLE_PUBLIC CkHttp  : public CkClassWithCallbacks
 	CkTask *QuickDeleteStrAsync(const char *url);
 
 
-	// Sends an HTTP GET request for a URL and returns the response body as a byte
-	// array. The URL may contain query parameters. If the SendCookies property is
-	// true, matching cookies previously persisted to the CookiesDir are automatically
-	// included in the request. If the FetchFromCache property is true, the page may be
-	// fetched directly from cache. Because the URL can specify any type of resource
-	// (HTML page, GIF image, etc.) the return value is a byte array. If the resource
-	// is known to be a string, such as with an HTML page, you may call QuickGetStr
-	// instead. If the HTTP request fails, a zero-length byte array is returned and
-	// error information can be found in the LastErrorText, LastErrorXml, or
-	// LastErrorHtml properties.
+	// Sends an HTTP GET request for a URL and returns the binary response body. The
+	// URL may contain query parameters. If the SendCookies property is true,
+	// matching cookies previously persisted to the CookiesDir are automatically
+	// included in the request. If the FetchFromCache property is true, the resource
+	// may be fetched directly from cache.
 	// 
 	// Note: The HTTP response code is available in the LastStatus property. Other
 	// properties having information include LastResponseHeader, LastResponseBody,
 	// LastModDate, LastContentType, etc.
+	// 
+	// A response code >= 400 is considered a failure. If the error response was
+	// textual in nature, then it will also be available in the LastResponseBody
+	// property.
 	// 
 	bool QuickGet(const char *url, CkByteData &outData);
 
-	// Sends an HTTP GET request for a URL and returns the response body as a byte
-	// array. The URL may contain query parameters. If the SendCookies property is
-	// true, matching cookies previously persisted to the CookiesDir are automatically
-	// included in the request. If the FetchFromCache property is true, the page may be
-	// fetched directly from cache. Because the URL can specify any type of resource
-	// (HTML page, GIF image, etc.) the return value is a byte array. If the resource
-	// is known to be a string, such as with an HTML page, you may call QuickGetStr
-	// instead. If the HTTP request fails, a zero-length byte array is returned and
-	// error information can be found in the LastErrorText, LastErrorXml, or
-	// LastErrorHtml properties.
+	// Sends an HTTP GET request for a URL and returns the binary response body. The
+	// URL may contain query parameters. If the SendCookies property is true,
+	// matching cookies previously persisted to the CookiesDir are automatically
+	// included in the request. If the FetchFromCache property is true, the resource
+	// may be fetched directly from cache.
 	// 
 	// Note: The HTTP response code is available in the LastStatus property. Other
 	// properties having information include LastResponseHeader, LastResponseBody,
 	// LastModDate, LastContentType, etc.
+	// 
+	// A response code >= 400 is considered a failure. If the error response was
+	// textual in nature, then it will also be available in the LastResponseBody
+	// property.
 	// 
 	CkTask *QuickGetAsync(const char *url);
 
@@ -2587,11 +2606,23 @@ class CK_VISIBLE_PUBLIC CkHttp  : public CkClassWithCallbacks
 	// The same as QuickGet, but returns the content in a Chilkat BinData object. The
 	// existing content of binData, if any, is cleared and replaced with the downloaded
 	// content.
+	// 
+	// A response code >= 400 is considered a failure and the method will return
+	// false. However, the error response will still be returned in binData. If the
+	// error response was textual in nature, then it will also be available in the
+	// LastResponseBody property.
+	// 
 	bool QuickGetBd(const char *url, CkBinData &binData);
 
 	// The same as QuickGet, but returns the content in a Chilkat BinData object. The
 	// existing content of binData, if any, is cleared and replaced with the downloaded
 	// content.
+	// 
+	// A response code >= 400 is considered a failure and the method will return
+	// false. However, the error response will still be returned in binData. If the
+	// error response was textual in nature, then it will also be available in the
+	// LastResponseBody property.
+	// 
 	CkTask *QuickGetBdAsync(const char *url, CkBinData &binData);
 
 
@@ -2612,11 +2643,23 @@ class CK_VISIBLE_PUBLIC CkHttp  : public CkClassWithCallbacks
 	// The same as QuickGetStr, but returns the content in a Chilkat StringBuilder
 	// object. The existing content of sbContent, if any, is cleared and replaced with the
 	// downloaded content.
+	// 
+	// If the response status code is >= 400, then this method returns false, but the
+	// body of the HTTP response is still returned in sbContent. This allows for the
+	// application to examine the response body for cases where an error is returned,
+	// but the expected content is not received.
+	// 
 	bool QuickGetSb(const char *url, CkStringBuilder &sbContent);
 
 	// The same as QuickGetStr, but returns the content in a Chilkat StringBuilder
 	// object. The existing content of sbContent, if any, is cleared and replaced with the
 	// downloaded content.
+	// 
+	// If the response status code is >= 400, then this method returns false, but the
+	// body of the HTTP response is still returned in sbContent. This allows for the
+	// application to examine the response body for cases where an error is returned,
+	// but the expected content is not received.
+	// 
 	CkTask *QuickGetSbAsync(const char *url, CkStringBuilder &sbContent);
 
 
@@ -3213,6 +3256,21 @@ class CK_VISIBLE_PUBLIC CkHttp  : public CkClassWithCallbacks
 	// Equivalent to setting the Password property, but provides for a more secure way
 	// of passing the password in a secure string object.
 	bool SetSecurePassword(CkSecureString &password);
+
+
+	// Enforces a requirement on the server's certificate. The reqName can be one of the
+	// following:
+	//     SubjectDN
+	//     SubjectCN
+	//     IssuerDN
+	//     IssuerCN
+	//     SAN (added in v9.5.0.84)
+	// 
+	// The reqName specifies the part of the certificate, and the reqValue is the value that
+	// it must match exactly or with a wildcard (*). If the server's certificate does
+	// not match, the SSL / TLS connection is aborted.
+	// 
+	void SetSslCertRequirement(const char *reqName, const char *reqValue);
 
 
 	// Allows for a client-side certificate to be used for an SSL connection.

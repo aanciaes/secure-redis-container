@@ -52,6 +52,7 @@ CK_C_VISIBLE_PUBLIC BOOL CkCsrW_getVerboseLogging(HCkCsrW cHandle);
 CK_C_VISIBLE_PUBLIC void  CkCsrW_putVerboseLogging(HCkCsrW cHandle, BOOL newVal);
 CK_C_VISIBLE_PUBLIC void CkCsrW_getVersion(HCkCsrW cHandle, HCkString retval);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkCsrW_version(HCkCsrW cHandle);
+CK_C_VISIBLE_PUBLIC BOOL CkCsrW_AddSan(HCkCsrW cHandle, const wchar_t *sanType, const wchar_t *sanValue);
 CK_C_VISIBLE_PUBLIC BOOL CkCsrW_GenCsrBd(HCkCsrW cHandle, HCkPrivateKeyW privKey, HCkBinDataW csrData);
 CK_C_VISIBLE_PUBLIC BOOL CkCsrW_GenCsrPem(HCkCsrW cHandle, HCkPrivateKeyW privKey, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkCsrW_genCsrPem(HCkCsrW cHandle, HCkPrivateKeyW privKey);

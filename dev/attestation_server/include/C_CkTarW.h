@@ -93,6 +93,7 @@ CK_C_VISIBLE_PUBLIC BOOL CkTarW_AddDirRoot(HCkTarW cHandle, const wchar_t *dirPa
 CK_C_VISIBLE_PUBLIC BOOL CkTarW_AddDirRoot2(HCkTarW cHandle, const wchar_t *rootPrefix, const wchar_t *rootPath);
 CK_C_VISIBLE_PUBLIC BOOL CkTarW_AddFile(HCkTarW cHandle, const wchar_t *path);
 CK_C_VISIBLE_PUBLIC BOOL CkTarW_AddFile2(HCkTarW cHandle, const wchar_t *filePath, const wchar_t *pathWithinTar);
+CK_C_VISIBLE_PUBLIC BOOL CkTarW_ClearDirRootsAndFiles(HCkTarW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkTarW_CreateDeb(HCkTarW cHandle, const wchar_t *controlPath, const wchar_t *dataPath, const wchar_t *debPath);
 CK_C_VISIBLE_PUBLIC BOOL CkTarW_GetDirRoot(HCkTarW cHandle, int index, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkTarW_getDirRoot(HCkTarW cHandle, int index);

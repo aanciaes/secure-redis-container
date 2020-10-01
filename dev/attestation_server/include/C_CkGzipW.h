@@ -77,7 +77,6 @@ CK_C_VISIBLE_PUBLIC BOOL CkGzipW_ExamineMemory(HCkGzipW cHandle, HCkByteData inG
 CK_C_VISIBLE_PUBLIC HCkDateTimeW CkGzipW_GetDt(HCkGzipW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkGzipW_InflateStringENC(HCkGzipW cHandle, const wchar_t *inString, const wchar_t *convertFromCharset, const wchar_t *inputEncoding, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkGzipW_inflateStringENC(HCkGzipW cHandle, const wchar_t *inString, const wchar_t *convertFromCharset, const wchar_t *inputEncoding);
-CK_C_VISIBLE_PUBLIC BOOL CkGzipW_IsUnlocked(HCkGzipW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkGzipW_LoadTaskCaller(HCkGzipW cHandle, HCkTaskW task);
 CK_C_VISIBLE_PUBLIC BOOL CkGzipW_ReadFile(HCkGzipW cHandle, const wchar_t *path, HCkByteData outBytes);
 CK_C_VISIBLE_PUBLIC BOOL CkGzipW_SaveLastError(HCkGzipW cHandle, const wchar_t *path);
