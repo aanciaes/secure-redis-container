@@ -875,6 +875,31 @@ class CK_VISIBLE_PUBLIC CkZipW  : public CkClassWithCallbacksW
 	// 
 	void put_TextFlag(bool newVal);
 
+	// This is a catch-all property to be used for uncommon needs. This property
+	// defaults to the empty string, and should typically remain empty.
+	// 
+	// Currently, the only possible option is "ForceZip64".
+	//     "ForceZip64" - Force the zip to be written with the Zip64 file format, even
+	//     if not necessary.
+	// 
+	void get_UncommonOptions(CkString &str);
+	// This is a catch-all property to be used for uncommon needs. This property
+	// defaults to the empty string, and should typically remain empty.
+	// 
+	// Currently, the only possible option is "ForceZip64".
+	//     "ForceZip64" - Force the zip to be written with the Zip64 file format, even
+	//     if not necessary.
+	// 
+	const wchar_t *uncommonOptions(void);
+	// This is a catch-all property to be used for uncommon needs. This property
+	// defaults to the empty string, and should typically remain empty.
+	// 
+	// Currently, the only possible option is "ForceZip64".
+	//     "ForceZip64" - Force the zip to be written with the Zip64 file format, even
+	//     if not necessary.
+	// 
+	void put_UncommonOptions(const wchar_t *newVal);
+
 	// Starting in v9.4.1, Chilkat Zip will automatically unzip ZIPX files using any of
 	// the following compression methods: BZIP2, PPMd, LZMA, and Deflate64 ("Deflate64"
 	// is a trademark of PKWare, Inc.)
@@ -1391,6 +1416,13 @@ class CK_VISIBLE_PUBLIC CkZipW  : public CkClassWithCallbacksW
 #endif
 
 	// Set the password for an encrypted or password-protected Zip.
+	// 
+	// Note: The SetPassword method has the effect of setting both the EncryptPassword
+	// property as well as the DecryptPassword property. The SetPassword method should
+	// no longer be used. It has been replaced by the DecryptPassword and
+	// EncryptPassword properties to make it possible to open an encrypted zip and
+	// re-write it with a new password.
+	// 
 	void SetPassword(const wchar_t *password);
 
 	// Unlocks the component allowing for the full functionality to be used. If a

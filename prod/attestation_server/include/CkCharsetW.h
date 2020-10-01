@@ -787,9 +787,6 @@ class CK_VISIBLE_PUBLIC CkCharsetW  : public CkWideCharBase
 	// _AMP_#xE5; , _AMP_#x6C34; , _AMP_Iacute; , etc.
 	bool HtmlEntityDecodeFile(const wchar_t *inPath, const wchar_t *destPath);
 
-	// Returns true if the component is unlocked.
-	bool IsUnlocked(void);
-
 	// Converts a string to lowercase.
 	bool LowerCase(const wchar_t *inStr, CkString &outStr);
 	// Converts a string to lowercase.

@@ -69,7 +69,6 @@ CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_HtmlDecodeToStr(HCkCharsetW cHandle, const w
 CK_C_VISIBLE_PUBLIC const wchar_t *CkCharsetW_htmlDecodeToStr(HCkCharsetW cHandle, const wchar_t *inStr);
 CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_HtmlEntityDecode(HCkCharsetW cHandle, HCkByteData inHtml, HCkByteData outData);
 CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_HtmlEntityDecodeFile(HCkCharsetW cHandle, const wchar_t *inPath, const wchar_t *destPath);
-CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_IsUnlocked(HCkCharsetW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_LowerCase(HCkCharsetW cHandle, const wchar_t *inStr, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkCharsetW_lowerCase(HCkCharsetW cHandle, const wchar_t *inStr);
 CK_C_VISIBLE_PUBLIC BOOL CkCharsetW_ReadFile(HCkCharsetW cHandle, const wchar_t *path, HCkByteData outData);

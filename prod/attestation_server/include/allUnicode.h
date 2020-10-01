@@ -68,6 +68,7 @@
 #include "CkNtlmW.h"
 #include "CkOAuth1W.h"
 #include "CkOAuth2W.h"
+#include "CkPdfW.h"
 #include "CkPemW.h"
 #include "CkPfxW.h"
 #include "CkPrivateKeyW.h"

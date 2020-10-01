@@ -71,6 +71,7 @@
 #include "C_CkNtlm.h"
 #include "C_CkOAuth1.h"
 #include "C_CkOAuth2.h"
+#include "C_CkPdf.h"
 #include "C_CkPem.h"
 #include "C_CkPfx.h"
 #include "C_CkPrivateKey.h"

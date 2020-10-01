@@ -109,14 +109,14 @@ class CK_VISIBLE_PUBLIC CkAuthAzureAD  : public CkClassWithCallbacks
 	// application, and then click Configure.
 	void put_Resource(const char *newVal);
 
-	// true if the AccessToken property contains a valid non-expired access token
-	// obtained via the call to ObtainAccessToken.
+	// Your Azure account tenant ID. (If you don't know what it is, Google "how to find
+	// my azure tenant id" for help.)
 	void get_TenantId(CkString &str);
-	// true if the AccessToken property contains a valid non-expired access token
-	// obtained via the call to ObtainAccessToken.
+	// Your Azure account tenant ID. (If you don't know what it is, Google "how to find
+	// my azure tenant id" for help.)
 	const char *tenantId(void);
-	// true if the AccessToken property contains a valid non-expired access token
-	// obtained via the call to ObtainAccessToken.
+	// Your Azure account tenant ID. (If you don't know what it is, Google "how to find
+	// my azure tenant id" for help.)
 	void put_TenantId(const char *newVal);
 
 	// true if the AccessToken property contains a valid non-expired access token

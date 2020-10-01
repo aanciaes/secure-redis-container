@@ -458,6 +458,10 @@ class CK_VISIBLE_PUBLIC CkTarW  : public CkClassWithCallbacksW
 	// 
 	bool AddFile2(const wchar_t *filePath, const wchar_t *pathWithinTar);
 
+	// Clears all directory roots and files previously added by calls to AddDirRoot,
+	// AddDirRoot2, AddFile, and AddFile2.
+	bool ClearDirRootsAndFiles(void);
+
 	// Creates a .deb Debian binary package archive from a control.tar.gz and
 	// data.tar.gz. The controlPath is the path to the control.tar.gz file (or equivalent),
 	// and the dataPath is the path to the data.tar.gz file. The output file path (.deb) is

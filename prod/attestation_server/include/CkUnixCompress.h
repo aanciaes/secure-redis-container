@@ -131,11 +131,6 @@ class CK_VISIBLE_PUBLIC CkUnixCompress  : public CkClassWithCallbacks
 	bool CompressStringToFile(const char *inStr, const char *charset, const char *destPath);
 
 
-	// Returns true if the component has been unlocked. (For ActiveX, returns 1 if
-	// unlocked.)
-	bool IsUnlocked(void);
-
-
 	// Loads the caller of the task's async method.
 	bool LoadTaskCaller(CkTask &task);
 

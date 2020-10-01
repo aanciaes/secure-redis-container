@@ -40,7 +40,6 @@ CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_CompressMemory(HCkUnixCompressW cHandle
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_CompressMemToFile(HCkUnixCompressW cHandle, HCkByteData inData, const wchar_t *destPath);
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_CompressString(HCkUnixCompressW cHandle, const wchar_t *inStr, const wchar_t *charset, HCkByteData outBytes);
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_CompressStringToFile(HCkUnixCompressW cHandle, const wchar_t *inStr, const wchar_t *charset, const wchar_t *destPath);
-CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_IsUnlocked(HCkUnixCompressW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_LoadTaskCaller(HCkUnixCompressW cHandle, HCkTaskW task);
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_SaveLastError(HCkUnixCompressW cHandle, const wchar_t *path);
 CK_C_VISIBLE_PUBLIC BOOL CkUnixCompressW_UncompressFile(HCkUnixCompressW cHandle, const wchar_t *inFilename, const wchar_t *destPath);

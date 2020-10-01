@@ -804,10 +804,6 @@ class CK_VISIBLE_PUBLIC CkCharset  : public CkMultiByteBase
 	bool HtmlEntityDecodeFile(const char *inPath, const char *destPath);
 
 
-	// Returns true if the component is unlocked.
-	bool IsUnlocked(void);
-
-
 	// Converts a string to lowercase.
 	bool LowerCase(const char *inStr, CkString &outStr);
 

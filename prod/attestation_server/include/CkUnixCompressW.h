@@ -134,10 +134,6 @@ class CK_VISIBLE_PUBLIC CkUnixCompressW  : public CkClassWithCallbacksW
 	// such as "utf-8", "iso-8859-1", "Windows-1252", "ucs-2", etc.
 	bool CompressStringToFile(const wchar_t *inStr, const wchar_t *charset, const wchar_t *destPath);
 
-	// Returns true if the component has been unlocked. (For ActiveX, returns 1 if
-	// unlocked.)
-	bool IsUnlocked(void);
-
 	// Loads the caller of the task's async method.
 	bool LoadTaskCaller(CkTaskW &task);
 

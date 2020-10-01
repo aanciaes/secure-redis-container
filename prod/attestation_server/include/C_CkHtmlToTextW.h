@@ -29,7 +29,6 @@ CK_C_VISIBLE_PUBLIC BOOL CkHtmlToTextW_getVerboseLogging(HCkHtmlToTextW cHandle)
 CK_C_VISIBLE_PUBLIC void  CkHtmlToTextW_putVerboseLogging(HCkHtmlToTextW cHandle, BOOL newVal);
 CK_C_VISIBLE_PUBLIC void CkHtmlToTextW_getVersion(HCkHtmlToTextW cHandle, HCkString retval);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkHtmlToTextW_version(HCkHtmlToTextW cHandle);
-CK_C_VISIBLE_PUBLIC BOOL CkHtmlToTextW_IsUnlocked(HCkHtmlToTextW cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkHtmlToTextW_ReadFileToString(HCkHtmlToTextW cHandle, const wchar_t *filename, const wchar_t *srcCharset, HCkString outStr);
 CK_C_VISIBLE_PUBLIC const wchar_t *CkHtmlToTextW_readFileToString(HCkHtmlToTextW cHandle, const wchar_t *filename, const wchar_t *srcCharset);
 CK_C_VISIBLE_PUBLIC BOOL CkHtmlToTextW_SaveLastError(HCkHtmlToTextW cHandle, const wchar_t *path);

@@ -350,6 +350,8 @@ CK_C_VISIBLE_PUBLIC BOOL CkHttp_HasRequestHeader(HCkHttp cHandle, const char *na
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_IsUnlocked(HCkHttp cHandle);
 CK_C_VISIBLE_PUBLIC HCkJsonObject CkHttp_LastJsonData(HCkHttp cHandle);
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_LoadTaskCaller(HCkHttp cHandle, HCkTask task);
+CK_C_VISIBLE_PUBLIC int CkHttp_OcspCheck(HCkHttp cHandle, const char *domain, int port);
+CK_C_VISIBLE_PUBLIC HCkTask CkHttp_OcspCheckAsync(HCkHttp cHandle, const char *domain, int port);
 CK_C_VISIBLE_PUBLIC int CkHttp_ParseOcspReply(HCkHttp cHandle, HCkBinData ocspReply, HCkJsonObject replyData);
 CK_C_VISIBLE_PUBLIC HCkHttpResponse CkHttp_PBinary(HCkHttp cHandle, const char *verb, const char *url, HCkByteData byteData, const char *contentType, BOOL md5, BOOL gzip);
 CK_C_VISIBLE_PUBLIC HCkTask CkHttp_PBinaryAsync(HCkHttp cHandle, const char *verb, const char *url, HCkByteData byteData, const char *contentType, BOOL md5, BOOL gzip);
@@ -452,6 +454,7 @@ CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetOAuthRsaKey(HCkHttp cHandle, HCkPrivateKey pr
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetPassword(HCkHttp cHandle, HCkSecureString password);
 CK_C_VISIBLE_PUBLIC void CkHttp_SetRequestHeader(HCkHttp cHandle, const char *headerFieldName, const char *headerFieldValue);
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetSecurePassword(HCkHttp cHandle, HCkSecureString password);
+CK_C_VISIBLE_PUBLIC void CkHttp_SetSslCertRequirement(HCkHttp cHandle, const char *reqName, const char *reqValue);
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetSslClientCert(HCkHttp cHandle, HCkCert cert);
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetSslClientCertPem(HCkHttp cHandle, const char *pemDataOrPath, const char *pemPassword);
 CK_C_VISIBLE_PUBLIC BOOL CkHttp_SetSslClientCertPfx(HCkHttp cHandle, const char *pfxPath, const char *pfxPassword);
