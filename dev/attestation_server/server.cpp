@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <chrono>
 
 #define SEVER_ACCEPTED_USERNAME "redis-proxy-cd497e6b-10cf-4ed2-be63-18b6b16375f6"
 #define SEVER_ACCEPTED_PASSWORD "2grvTkqUhS7wE4R4WRjnuXTLzsxnAu"
@@ -152,6 +153,13 @@ void authenticateRequest(const httplib::Request & req) {
     }
 }
 
+void logAttestationRequest(std::string nonceStr, std::string remoteIp, time_t start_time_string, std::chrono::steady_clock::time_point begin, std::chrono::steady_clock::time_point end) {
+    std::string start_time = ctime( & start_time_string);
+    start_time = start_time.substr(0, start_time.length() - 1); // remove newline at the end of datetime
+
+    std::cout << "Remote attestation request (" << nonceStr << ") from " << remoteIp << " started at " << start_time << " and took " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+}
+
 int main(void) {
 
     using namespace httplib;
@@ -171,20 +179,30 @@ int main(void) {
 
             long nonce = std::stol(nonceStr);
 
+            // current date/time based on current system
+            time_t now = time(0);
+            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
             std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
-            std::string redisServerSigned = signData(redisServerHash);
-
             std::string redisConfigHash = hashFile(REDIS_CONFIG_FILE_PATH);
-            std::string redisConfigSigned = signData(redisConfigHash);
-
-            std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
-            std::string attestServerSigned = signData(attestServerHash);
-
             std::string redisMrEnclave = readMrEnclave(REDIS_MR_ENCLAVE_FILE);
-            std::string redisMrEnclaveSigned = signData(redisMrEnclave);
-
+            std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
             std::string attstServerMrEnclave = readMrEnclave(ATTESTATION_SERVER_MR_ENCLAVE_FILE);
-            std::string attstServerMrEnclaveSigned = signData(attstServerMrEnclave);
+
+            std::string quote;
+            quote.append(redisServerHash);
+            quote.append("|");
+            quote.append(redisConfigHash);
+            quote.append("|");
+            quote.append(redisMrEnclave);
+            quote.append("|");
+            quote.append(attestServerHash);
+            quote.append("|");
+            quote.append(attstServerMrEnclave);
+            quote.append("|");
+            quote.append(std::to_string((nonce + 1)));
+
+            std::string quoteSignature = signData(quote);
 
             // Pretty Print Response
             std::string response;
@@ -197,8 +215,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisServerHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisServerSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Redis Config Object
@@ -208,8 +224,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisConfigHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisConfigSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Redis Mr Enclave Object
@@ -219,8 +233,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisMrEnclave);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisMrEnclaveSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Attestation Server Object
@@ -230,8 +242,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(attestServerHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(attestServerSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Attestation Server Mr Enclave Object
@@ -241,8 +251,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(attstServerMrEnclave);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(attstServerMrEnclaveSigned);
             response.append("\"\r\n\t\t\t}\r\n");
 
             // nonce
@@ -252,34 +260,15 @@ int main(void) {
             response.append(",\r\n");
 
             // complete quote signature
-            response.append("\t\t\"quoteSignature\": ");
-            response.append("\"Insert quote signature here. Challenges + nonce\"");
-            response.append("\r\n\t}\r\n");
+            response.append("\t\t\"quoteSignature\": \"");
+            response.append(quoteSignature);
+            response.append("\"\r\n\t}\r\n");
 
             response.append("}");
 
-            // current date/time based on current system
-            time_t now = time(0);
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-            // convert now to string form
-            std::string dt = ctime( & now);
-            dt = dt.substr(0, dt.length() - 1); // remove newline at the end of datetime
-
-            // Logging
-            std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
-
-            // Redis Server Object
-            std::cout << "\t filename: " << REDIS_CONFIG_FILE_PATH << std::endl;
-            std::cout << "\t hash: " << redisConfigHash << std::endl;
-            std::cout << "\t sig: " << redisConfigSigned << std::endl;
-
-            std::cout << "\t ---" << std::endl;
-
-            // Mr Enclave Object
-            std::cout << "\t filename: " << REDIS_MR_ENCLAVE_FILE << std::endl;
-            std::cout << "\t hash: " << redisMrEnclave << std::endl;
-            std::cout << "\t sig: " << redisMrEnclaveSigned << std::endl;
-            std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
+            logAttestationRequest(nonceStr, req.remote_addr, now, begin, end);
 
             res.set_content(response, "application/json");
         } catch (int errorCode) {
