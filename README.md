@@ -36,13 +36,13 @@ To build the production image:
 
 If image is ready for production, build the prod tag and push:
 
-1. `docker build -t aanciaes/secure-redis:prod .`
-2. `docker push aanciaes/secure-redis:prod`
+1. `docker build -t aanciaes/secure-redis:latest .`
+2. `docker push aanciaes/secure-redis:latest`
 
 ### Running on Production Environment
 
 1. Login to docker
-2. `docker run --rm --name secure-redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW -e SCONE_FORK=1 aanciaes/secure-redis:prod`
+2. `docker run --rm --name secure-redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW -e SCONE_FORK=1 aanciaes/secure-redis:latest`
 
 **Notes:**
 
