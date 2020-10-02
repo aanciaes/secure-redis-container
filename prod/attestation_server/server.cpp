@@ -172,19 +172,25 @@ int main(void) {
             long nonce = std::stol(nonceStr);
 
             std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
-            std::string redisServerSigned = signData(redisServerHash);
-
             std::string redisConfigHash = hashFile(REDIS_CONFIG_FILE_PATH);
-            std::string redisConfigSigned = signData(redisConfigHash);
-
-            std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
-            std::string attestServerSigned = signData(attestServerHash);
-
             std::string redisMrEnclave = readMrEnclave(REDIS_MR_ENCLAVE_FILE);
-            std::string redisMrEnclaveSigned = signData(redisMrEnclave);
-
+            std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
             std::string attstServerMrEnclave = readMrEnclave(ATTESTATION_SERVER_MR_ENCLAVE_FILE);
-            std::string attstServerMrEnclaveSigned = signData(attstServerMrEnclave);
+
+            std::string quote;
+            quote.append(redisServerHash);
+            quote.append("|");
+            quote.append(redisConfigHash);
+            quote.append("|");
+            quote.append(redisMrEnclave);
+            quote.append("|");
+            quote.append(attestServerHash);
+            quote.append("|");
+            quote.append(attstServerMrEnclave);
+            quote.append("|");
+            quote.append(std::to_string((nonce + 1)));
+
+            std::string quoteSignature = signData(quote);
 
             // Pretty Print Response
             std::string response;
@@ -197,8 +203,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisServerHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisServerSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Redis Config Object
@@ -208,8 +212,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisConfigHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisConfigSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Redis Mr Enclave Object
@@ -219,8 +221,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(redisMrEnclave);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(redisMrEnclaveSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Attestation Server Object
@@ -230,8 +230,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(attestServerHash);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(attestServerSigned);
             response.append("\"\r\n\t\t\t},\r\n");
 
             // Attestation Server Mr Enclave Object
@@ -241,8 +239,6 @@ int main(void) {
             response.append("\",\r\n");
             response.append("\t\t\t\t\"hash\": \"");
             response.append(attstServerMrEnclave);
-            response.append("\",\r\n\t\t\t\t\"signature\": \"");
-            response.append(attstServerMrEnclaveSigned);
             response.append("\"\r\n\t\t\t}\r\n");
 
             // nonce
@@ -252,9 +248,9 @@ int main(void) {
             response.append(",\r\n");
 
             // complete quote signature
-            response.append("\t\t\"quoteSignature\": ");
-            response.append("\"Insert quote signature here. Challenges + nonce\"");
-            response.append("\r\n\t}\r\n");
+            response.append("\t\t\"quoteSignature\": \"");
+            response.append(quoteSignature);
+            response.append("\"\r\n\t}\r\n");
 
             response.append("}");
 
@@ -271,14 +267,12 @@ int main(void) {
             // Redis Server Object
             std::cout << "\t filename: " << REDIS_CONFIG_FILE_PATH << std::endl;
             std::cout << "\t hash: " << redisConfigHash << std::endl;
-            std::cout << "\t sig: " << redisConfigSigned << std::endl;
 
             std::cout << "\t ---" << std::endl;
 
             // Mr Enclave Object
             std::cout << "\t filename: " << REDIS_MR_ENCLAVE_FILE << std::endl;
             std::cout << "\t hash: " << redisMrEnclave << std::endl;
-            std::cout << "\t sig: " << redisMrEnclaveSigned << std::endl;
             std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
 
             res.set_content(response, "application/json");
