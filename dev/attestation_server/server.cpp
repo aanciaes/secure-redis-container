@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <chrono>
 
 #define SEVER_ACCEPTED_USERNAME "redis-proxy-cd497e6b-10cf-4ed2-be63-18b6b16375f6"
 #define SEVER_ACCEPTED_PASSWORD "2grvTkqUhS7wE4R4WRjnuXTLzsxnAu"
@@ -152,6 +153,13 @@ void authenticateRequest(const httplib::Request & req) {
     }
 }
 
+void logAttestationRequest(std::string nonceStr, std::string remoteIp, time_t start_time_string, std::chrono::steady_clock::time_point begin, std::chrono::steady_clock::time_point end) {
+    std::string start_time = ctime( & start_time_string);
+    start_time = start_time.substr(0, start_time.length() - 1); // remove newline at the end of datetime
+
+    std::cout << "Remote attestation request (" << nonceStr << ") from " << remoteIp << " started at " << start_time << " and took " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+}
+
 int main(void) {
 
     using namespace httplib;
@@ -171,11 +179,15 @@ int main(void) {
 
             long nonce = std::stol(nonceStr);
 
+            // current date/time based on current system
+            time_t now = time(0);
+            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
             std::string redisServerHash = hashFile(REDIS_SERVER_BINARY_PATH);
             std::string redisConfigHash = hashFile(REDIS_CONFIG_FILE_PATH);
             std::string redisMrEnclave = readMrEnclave(REDIS_MR_ENCLAVE_FILE);
             std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
-           	std::string attstServerMrEnclave = readMrEnclave(ATTESTATION_SERVER_MR_ENCLAVE_FILE);
+            std::string attstServerMrEnclave = readMrEnclave(ATTESTATION_SERVER_MR_ENCLAVE_FILE);
 
             std::string quote;
             quote.append(redisServerHash);
@@ -254,25 +266,9 @@ int main(void) {
 
             response.append("}");
 
-            // current date/time based on current system
-            time_t now = time(0);
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-            // convert now to string form
-            std::string dt = ctime( & now);
-            dt = dt.substr(0, dt.length() - 1); // remove newline at the end of datetime
-
-            // Logging
-            std::cout << "--- Started Attestation Procedure at: " << dt << " ----" << std::endl;
-
-            // Redis Server Object
-            std::cout << "\t filename: " << REDIS_CONFIG_FILE_PATH << std::endl;
-            std::cout << "\t hash: " << redisConfigHash << std::endl;
-            std::cout << "\t ---" << std::endl;
-
-            // Mr Enclave Object
-            std::cout << "\t filename: " << REDIS_MR_ENCLAVE_FILE << std::endl;
-            std::cout << "\t hash: " << redisMrEnclave << std::endl;
-            std::cout << "------------------- End of Attestation Procedure -------------------" << std::endl;
+            logAttestationRequest(nonceStr, req.remote_addr, now, begin, end);
 
             res.set_content(response, "application/json");
         } catch (int errorCode) {
