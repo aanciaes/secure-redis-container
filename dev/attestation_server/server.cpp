@@ -166,7 +166,9 @@ int main(void) {
 
     httplib::Server svr;
 
-    svr.Get("/attest", [](const httplib::Request & req, httplib::Response & res) {
+    std::list<long> nonceList;
+
+    svr.Get("/attest", [&](const httplib::Request & req, httplib::Response & res) {
 
         try {
             authenticateRequest(req);
@@ -178,6 +180,13 @@ int main(void) {
             std::string nonceStr = req.get_param_value("nonce");
 
             long nonce = std::stol(nonceStr);
+            bool found = (std::find(nonceList.begin(), nonceList.end(), nonce) != nonceList.end());
+
+            if (found) {
+                throw 59873;
+            } else {
+                nonceList.insert(nonceList.end(), nonce);
+            }
 
             // current date/time based on current system
             time_t now = time(0);
@@ -311,6 +320,10 @@ int main(void) {
                 break;
             case 49213:
                 response.append("\t\"error\": \"Authentication Failed\",\r\n");
+                res.status = 403;
+                break;
+            case 59873:
+                response.append("\t\"error\": \"Nonce has already been used. Request denied.\",\r\n");
                 res.status = 403;
                 break;
             default:
