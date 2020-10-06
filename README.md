@@ -50,3 +50,22 @@ If image is ready for production, build the prod tag and push:
 1. The deployment on the cloud provider should be done by uploading the production image to the docker hub registry and pull from there to avoid any losses.
 2. Be aware of the redis ports with the docker run command as they may change in the `redis.conf`
 3. (Temporary) Be aware of the hard-coded paths and passwords when merging code from developement to production.
+
+## Unsecure Redis
+
+Redis container meant to run in unprotected memory (outside SGX).
+
+### Develpoment
+
+1. `docker build -t unsecure-redis:dev .`
+2. To run: `docker run --rm --name unsecure-redis -it -p 6363:6363 unsecure-redis:dev`
+
+### Production
+
+1. `docker build -t aanciaes/unsecure-redis:latest .`
+2. `docker push aanciaes/unsecure-redis:latest`
+
+### Running on Production Environment
+
+1. Login to docker
+2. `docker run --rm --name unsecure-redis -it -d -p 6363:6363 aanciaes/unsecure-redis:latest`

@@ -1,0 +1,14 @@
+SSL local certs
+
+1. Modify server-ssl.cnf to match specs
+
+2. Create new private key and csr 
+	$ openssl req -new -newkey rsa:2048 -sha256 -nodes -keyout tls.key -days 3560 -out server.csr -config server-ssl.conf
+
+3. Sign CSR with caRoot
+	$ openssl x509 -req -extfile server-ssl.conf -extensions v3_req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out tls.crt -sha256
+
+4. Import into PKCS12 store
+	$ openssl pkcs12 -export -in tls.crt -inkey tls.key -out server.p12 -name server -CAfile ca.crt -caname ca
+
+5. Delete created files
