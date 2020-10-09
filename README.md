@@ -61,7 +61,7 @@ To build the production image and test locally:
 #### Running on Production Environment
 
 1. Login to docker
-2. Download Docker Compose file with: ``
+2. Download Docker Compose file with: `wget https://raw.githubusercontent.com/aanciaes/secure-redis-container/master/prod/cluster-compose.yml\?token\=ADHR2YZ4W3Y7T2P3ESZKUJS7RGQBI -O cluster-compose.yml`
 3. Run with: `docker-compose -f cluster-compose.yml`
 4. Build the cluster by running `docker exec -i -t secure-redis-cluster-7000 redis-cli -p 7000 --cluster create 51.210.0.209:7000 51.210.0.209:7001 51.210.0.209:7002 --user anciaes -a '7Mmo8YDRU3+XGM6rAb72deJD432h)4'`
 
