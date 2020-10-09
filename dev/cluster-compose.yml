@@ -1,0 +1,38 @@
+version: "3.3"
+services:
+
+  dev-secure-redis-cluster-7000:
+    container_name: dev-secure-redis-cluster-7000
+    build: 
+      context: ./
+      dockerfile: ./cluster.Dockerfile
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7000
+
+# Run client
+# docker exec -i -t secure-redis-7000 redis-cli -p 7000
+
+  dev-secure-redis-cluster-7001:
+    container_name: dev-secure-redis-cluster-7001
+    build: 
+      context: ./
+      dockerfile: ./cluster.Dockerfile
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7001
+
+# Run client
+# docker exec -i -t secure-redis-7001 redis-cli -p 7001
+
+  dev-secure-redis-cluster-7002:
+    container_name: dev-secure-redis-cluster-7002
+    build: 
+      context: ./
+      dockerfile: ./cluster.Dockerfile
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7002
+  
+# Run client
+# docker exec -i -t secure-redis-7002 redis-cli -p 7002

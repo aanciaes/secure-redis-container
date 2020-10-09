@@ -14,9 +14,16 @@ The dev folder is supposed to be used to develop the attestation server. The pro
 
 Since the folder is mounted as a volume in the compiler conatiner, we can then exit the container and quickly run the compiled code alongside redis:
 
+### Standalone Redis Node
+
 1. Exit the compiler container with `exit`.
 2. Build the image with `docker build -t secure-redis:dev .`
 3. Run the image: `docker run --rm --name dev-secure-redis -it -p 6379:6379 -p 8541:8541 secure-redis:dev`
+
+### Cluster Mode
+
+1. Build the image and run docker-compose with `docker-compose -f cluster-compose.yml up --build`
+2. Build the cluster by running `docker exec -i -t dev-secure-redis-cluster-7000 redis-cli -p 7000 --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 -a 'redis'`
 
 
 ## Production
