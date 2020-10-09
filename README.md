@@ -30,27 +30,40 @@ Since the folder is mounted as a volume in the compiler conatiner, we can then e
 
 **Attention:** Modifications done on the development source code **won't** reflect on the production code. Modification must be done manually.
 
-To build the production image:
+To build the production image and test locally:
 
 1. `docker build -t secure-redis:prod .`
 2. To run: `docker run --rm --name secure-redis -it -p 6357:6357 -p 8541:8541 secure-redis:prod`
 
-### Push to docker hub
+### Standalone Secure Production Server
+
+#### Push to docker hub
 
 1. Login to docker hub
 2. Build image with version as tag:
-3. `docker build -t aanciaes/secure-redis:0.1.1 .`
-4. `docker push aanciaes/secure-redis:0.1.1`
+3. `docker build -t aanciaes/secure-redis:<version> .`
+4. `docker push aanciaes/secure-redis:<version>`
 
-If image is ready for production, build the prod tag and push:
-
-1. `docker build -t aanciaes/secure-redis:latest .`
-2. `docker push aanciaes/secure-redis:latest`
-
-### Running on Production Environment
+#### Running on Production Environment
 
 1. Login to docker
-2. `docker run --rm --name secure-redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW -e SCONE_FORK=1 aanciaes/secure-redis:latest`
+2. `docker run --rm --name secure-redis -it -d -p 6357:6357 -p 8541:8541 --device=/dev/isgx -e SCONE_MODE=HW -e SCONE_FORK=1 aanciaes/secure-redis:<version>`
+
+### Cluster Secure Production Server
+
+#### Push to docker hub
+
+1. Login to docker hub
+2. Build image with version as tag:
+3. `docker build -t aanciaes/secure-redis:<version>-cluster .`
+4. `docker push aanciaes/secure-redis:<version>-cluster`
+
+#### Running on Production Environment
+
+1. Login to docker
+2. Download Docker Compose file with: ``
+3. Run with: `docker-compose -f cluster-compose.yml`
+4. Build the cluster by running `docker exec -i -t secure-redis-cluster-7000 redis-cli -p 7000 --cluster create 51.210.0.209:7000 51.210.0.209:7001 51.210.0.209:7002 --user anciaes -a '7Mmo8YDRU3+XGM6rAb72deJD432h)4'`
 
 **Notes:**
 
