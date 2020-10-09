@@ -75,17 +75,35 @@ To build the production image and test locally:
 
 Redis container meant to run in unprotected memory (outside SGX).
 
-### Develpoment
+### Standalone Unsecure Redis Server
+
+#### Develpoment
 
 1. `docker build -t unsecure-redis:dev .`
 2. To run: `docker run --rm --name unsecure-redis -it -p 6363:6363 unsecure-redis:dev`
 
-### Production
+#### Production
 
 1. `docker build -t aanciaes/unsecure-redis:latest .`
 2. `docker push aanciaes/unsecure-redis:latest`
 
-### Running on Production Environment
+#### Running on Production Environment
 
 1. Login to docker
 2. `docker run --rm --name unsecure-redis -it -d -p 6363:6363 aanciaes/unsecure-redis:latest`
+
+### Cluster Unsecure Redis Server
+
+#### Production
+
+1. Login to docker hub
+2. Build image with version as tag:
+3. `docker build -t aanciaes/unsecure-redis:<version>-cluster .`
+4. `docker push aanciaes/unsecure-redis:<version>-cluster`
+
+#### Running on Production Environment
+
+1. Login to docker
+2. Download Docker Compose file with: `wget https://raw.githubusercontent.com/aanciaes/secure-redis-container/master/prod/cluster-compose.yml\?token\=ADHR2YZ4W3Y7T2P3ESZKUJS7RGQBI -O cluster-compose.yml`
+3. Run with: `docker-compose -f cluster-compose.yml`
+4. Build the cluster by running `docker exec -i -t secure-redis-cluster-7000 redis-cli -p 7000 --cluster create 51.210.0.209:7000 51.210.0.209:7001 51.210.0.209:7002 --user anciaes -a '7Mmo8YDRU3+XGM6rAb72deJD432h)4'`
