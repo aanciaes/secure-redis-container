@@ -160,9 +160,17 @@ void logAttestationRequest(std::string nonceStr, std::string remoteIp, time_t st
     std::cout << "Remote attestation request (" << nonceStr << ") from " << remoteIp << " started at " << start_time << " and took " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
 }
 
+std::string getPortFromEnv()  {
+    char * val = getenv( "REDIS_ATTESTATION_PORT" );
+    return val == NULL ? std::string("8541") : std::string(val);
+}
+
 int main(void) {
 
     using namespace httplib;
+
+    std::string port = getPortFromEnv();
+    int portInt = std::stoi( port );
 
     httplib::Server svr;
 
@@ -338,6 +346,6 @@ int main(void) {
         }
     });
 
-    std::cout << "Attestation Server Started at 0.0.0.0 port 8541" << std::endl;
-    svr.listen("0.0.0.0", 8541);
+    std::cout << "Attestation Server Started at 0.0.0.0 port " << port << std::endl;
+    svr.listen("0.0.0.0", portInt);
 }

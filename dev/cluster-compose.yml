@@ -9,6 +9,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7000
+      - REDIS_ATTESTATION_PORT=8540
 
 # Run client
 # docker exec -i -t secure-redis-7000 redis-cli -p 7000
@@ -21,6 +22,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7001
+      - REDIS_ATTESTATION_PORT=8541
 
 # Run client
 # docker exec -i -t secure-redis-7001 redis-cli -p 7001
@@ -33,6 +35,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7002
+      - REDIS_ATTESTATION_PORT=8542
   
 # Run client
 # docker exec -i -t secure-redis-7002 redis-cli -p 7002

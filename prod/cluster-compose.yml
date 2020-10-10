@@ -7,6 +7,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7000
+      - REDIS_ATTESTATION_PORT=8540
       - SCONE_FORK=1
       - SCONE_MODE=HW
     devices:
@@ -18,6 +19,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7001
+      - REDIS_ATTESTATION_PORT=8541
       - SCONE_FORK=1
       - SCONE_MODE=HW
     devices:
@@ -29,6 +31,7 @@ services:
     network_mode: "host"
     environment:
       - REDIS_PORT=7002
+      - REDIS_ATTESTATION_PORT=8542
       - SCONE_FORK=1
       - SCONE_MODE=HW
     devices:
