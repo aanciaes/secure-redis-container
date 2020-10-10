@@ -11,6 +11,9 @@
 #include <ctime>
 #include <chrono>
 
+#define CPU_INFORMATION_FILE "/proc/cpuinfo"
+#define OS_INFORMATION_FILE "/etc/os-release"
+
 #define SEVER_ACCEPTED_USERNAME "redis-proxy-cd497e6b-10cf-4ed2-be63-18b6b16375f6"
 #define SEVER_ACCEPTED_PASSWORD "2grvTkqUhS7wE4R4WRjnuXTLzsxnAu"
 
@@ -23,6 +26,68 @@
 
 #define REDIS_MR_ENCLAVE_FILE "/home/redis/mrenclave"
 #define ATTESTATION_SERVER_MR_ENCLAVE_FILE "/home/attestation_server/mrenclave"
+
+struct cpu_info {
+    int processorCount;
+    std::string processorModelName;
+};
+
+cpu_info getCpuInfo() {
+    std::fstream newfile;
+
+    newfile.open(CPU_INFORMATION_FILE, std::ios:: in );
+    if (newfile.is_open()) {
+
+        std::string tp;
+        int processorNumber = 0;
+        cpu_info cpu;
+
+        while ( getline (newfile,tp) ) {
+            if (tp.find("processor") != std::string::npos) {
+                processorNumber++;
+            }
+            if (tp.find("model name") != std::string::npos) {
+                std::string delimiter = ":";
+                std::string processorName = tp.substr((tp.find(delimiter) + 2), tp.length());
+                cpu.processorModelName = processorName;
+            }
+        }
+
+        newfile.close();
+
+        cpu.processorCount = processorNumber;
+        return cpu;
+
+    } else {
+        throw 33241;
+    }
+}
+
+std::string getOsInfo() {
+    std::fstream newfile;
+
+    newfile.open(OS_INFORMATION_FILE, std::ios:: in );
+    if (newfile.is_open()) {
+
+        std::string osPrettyName;
+        std::string tp;
+
+        while ( getline (newfile,tp) ) {
+            if (tp.find("PRETTY_NAME") != std::string::npos) {
+                std::string delimiter = "=";
+                std::string osPrettyNameT = tp.substr((tp.find(delimiter) + 2), tp.length());
+                osPrettyName = osPrettyNameT.substr(0, (osPrettyNameT.size() - 1));
+                break;
+            }
+        }
+
+        newfile.close();
+
+        return osPrettyName;
+    } else {
+        throw 33242;
+    }
+}
 
 std::string readMrEnclave(std::string file_path) {
     std::fstream newfile;
@@ -206,6 +271,9 @@ int main(void) {
             std::string attestServerHash = hashFile(ATTESTATION_SERVER_BIN_PATH);
             std::string attstServerMrEnclave = readMrEnclave(ATTESTATION_SERVER_MR_ENCLAVE_FILE);
 
+            cpu_info cpu = getCpuInfo();
+            std::string osInfo = getOsInfo();
+
             std::string quote;
             quote.append(redisServerHash);
             quote.append("|");
@@ -216,6 +284,12 @@ int main(void) {
             quote.append(attestServerHash);
             quote.append("|");
             quote.append(attstServerMrEnclave);
+            quote.append("|");
+            quote.append(std::to_string(cpu.processorCount));
+            quote.append("|");
+            quote.append(cpu.processorModelName);
+            quote.append("|");
+            quote.append(osInfo);
             quote.append("|");
             quote.append(std::to_string((nonce + 1)));
 
@@ -270,8 +344,19 @@ int main(void) {
             response.append(attstServerMrEnclave);
             response.append("\"\r\n\t\t\t}\r\n");
 
-            // nonce
+            // System info
             response.append("\t\t],\r\n");
+            response.append("\t\t\"system\": {\n");
+            response.append("\t\t\t\"processorCount\": ");
+            response.append(std::to_string(cpu.processorCount));
+            response.append(",\n\t\t\t\"processorModel\": \"");
+            response.append(cpu.processorModelName);
+            response.append("\",\n\t\t\t\"operaringSystem\": \"");
+            response.append(osInfo);
+            response.append("\"\n\t\t}");
+            response.append(",\r\n");
+
+            // nonce
             response.append("\t\t\"nonce\": ");
             response.append(std::to_string((nonce + 1)));
             response.append(",\r\n");
@@ -333,6 +418,14 @@ int main(void) {
             case 59873:
                 response.append("\t\"error\": \"Nonce has already been used. Request denied.\",\r\n");
                 res.status = 403;
+                break;
+            case 33241:
+                response.append("\t\"error\": \"Error reading cpu information file\",\r\n");
+                res.status = 500;
+                break;
+            case 33242:
+                response.append("\t\"error\": \"Error reading os information file\",\r\n");
+                res.status = 500;
                 break;
             default:
                 response.append("\t\"error\": \"An unexpected error occured.\",\r\n");
