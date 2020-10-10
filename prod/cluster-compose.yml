@@ -3,7 +3,7 @@ services:
 
   secure-redis-cluster-7000:
     container_name: secure-redis-cluster-7000
-    image: aanciaes/secure-redis:0.3.2-cluster
+    image: aanciaes/secure-redis:0.4-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7000
@@ -14,7 +14,7 @@ services:
 
   secure-redis-cluster-7001:
     container_name: secure-redis-cluster-7001
-    image: aanciaes/secure-redis:0.3.2-cluster
+    image: aanciaes/secure-redis:0.4-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7001
@@ -25,7 +25,7 @@ services:
 
   secure-redis-cluster-7002:
     container_name: secure-redis-cluster-7002
-    image: aanciaes/secure-redis:0.3.2-cluster
+    image: aanciaes/secure-redis:0.4-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7002
