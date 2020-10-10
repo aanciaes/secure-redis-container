@@ -65,6 +65,9 @@ To build the production image and test locally:
 3. Run with: `docker-compose -f secure-redis-cluster-compose.yml up -d`
 4. Build the cluster by running `redis-cli -h ns31249243.ip-51-210-0.eu -p 7000 --tls --cacert redis/tls/ca/thesis-ca.crt --cert redis/tls/redis-client/thesis-redis-cli.crt --key redis/tls/redis-client/thesis-redis-cli.key --cluster create 51.210.0.209:7000 51.210.0.209:7001 51.210.0.209:7002 --user anciaes -a '7Mmo8YDRU3+XGM6rAb72deJD432h)4'`
 
+To add more nodes, just add more containers on docker compose file.
+To add replicas just add the arugument `--cluster-replicas 1` to the commmand above.
+
 **Notes:**
 
 1. The deployment on the cloud provider should be done by uploading the production image to the docker hub registry and pull from there to avoid any losses.
@@ -107,3 +110,6 @@ Redis container meant to run in unprotected memory (outside SGX).
 2. Download Docker Compose file with: `wget https://raw.githubusercontent.com/aanciaes/secure-redis-container/master/unsecure-redis/cluster-compose.yml?token=ADHR2YZEYIF2PQNEH7NQRAS7RI7XS -O unsecure-redis-cluster-compose.yml`
 3. Run with: `docker-compose -f unsecure-redis-cluster-compose.yml up -d`
 4. Build the cluster by running `redis-cli -h ns31249243.ip-51-210-0.eu -p 7000 --tls --cacert thesis-prod-ssl/ca/thesis-ca.crt --cert thesis-prod-ssl/redis-client/thesis-redis-cli.crt --key thesis-prod-ssl/redis-client/thesis-redis-cli.key --cluster create 51.210.0.209:7000 51.210.0.209:7001 51.210.0.209:7002 --user anciaes -a '7Mmo8YDRU3+XGM6rAb72deJD432h)4'`
+
+To add more nodes, just add more containers on docker compose file.
+To add replicas just add the arugument `--cluster-replicas 1` to the commmand above.
