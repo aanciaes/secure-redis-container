@@ -1,7 +1,7 @@
 FROM redis:6.0-rc1
 
 # Copy config file
-COPY ./redis.conf /usr/local/etc/redis/redis.conf
+COPY ./redis/redis.conf /usr/local/etc/redis/redis.conf
 
 # Copy TLS files
 COPY thesis-prod-ssl/redis-server/thesis-redis-server.key /usr/local/etc/redis/redis.key

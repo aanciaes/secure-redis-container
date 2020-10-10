@@ -72,6 +72,7 @@ To build the production image and test locally:
 3. (Temporary) Be aware of the hard-coded paths and passwords when merging code from developement to production.
 
 ## Unsecure Redis
+(https://hub.docker.com/repository/docker/aanciaes/unsecure-redis/general)
 
 Redis container meant to run in unprotected memory (outside SGX).
 
@@ -84,21 +85,20 @@ Redis container meant to run in unprotected memory (outside SGX).
 
 #### Production
 
-1. `docker build -t aanciaes/unsecure-redis:latest .`
-2. `docker push aanciaes/unsecure-redis:latest`
+1. `docker build -t aanciaes/unsecure-redis:<version> .`
+2. `docker push aanciaes/unsecure-redis:<version>`
 
 #### Running on Production Environment
 
 1. Login to docker
-2. `docker run --rm --name unsecure-redis -it -d -p 6363:6363 aanciaes/unsecure-redis:latest`
+2. `docker run --rm --name unsecure-redis -it -d -p 6363:6363 aanciaes/unsecure-redis:<version>`
 
 ### Cluster Unsecure Redis Server
 
 #### Production
 
 1. Login to docker hub
-2. Build image with version as tag:
-3. `docker build -t aanciaes/unsecure-redis:<version>-cluster .`
+2. Build image with version as tag: `docker build -f cluster.Dockerfile -t aanciaes/unsecure-redis:<version>-cluster .`
 4. `docker push aanciaes/unsecure-redis:<version>-cluster`
 
 #### Running on Production Environment
