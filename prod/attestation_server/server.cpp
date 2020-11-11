@@ -21,8 +21,7 @@
 #define REDIS_CONFIG_FILE_PATH "/usr/local/etc/redis/redis.conf"
 #define ATTESTATION_SERVER_BIN_PATH "/home/attestation_server/attestation-server"
 
-#define ATTESTATION_KEY_STORE L"/home/attestation_server/attestation-identity-key.p12"
-#define ATTESTATION_KEY_STORE_PASSWORD L"K!waNR4HHx4UxRwXxR*vXiG4v"
+#define ATTESTATION_SIGNATURE_PRIVATE_KEY L"/home/attestation_server/attestation-identity-key.key"
 
 #define REDIS_MR_ENCLAVE_FILE "/home/redis/mrenclave"
 #define ATTESTATION_SERVER_MR_ENCLAVE_FILE "/home/attestation_server/mrenclave"
@@ -112,29 +111,20 @@ std::string signData(std::string data) {
     std::wstring widestr = std::wstring(data.begin(), data.end());
     const wchar_t * strData = widestr.c_str();
 
-    CkRsaW rsa;
+    // Get the aik private key.
+    CkPrivateKeyW privKey;
+    bool success = privKey.LoadPkcs8File(ATTESTATION_SIGNATURE_PRIVATE_KEY);
 
-    // Load the ..p12
-    CkPfxW pfx;
-    bool success = pfx.LoadPfxFile(ATTESTATION_KEY_STORE, ATTESTATION_KEY_STORE_PASSWORD);
     if (success != true) {
-        throw 5477;
-    }
-
-    // Get the default private key.
-    CkPrivateKeyW * privKey = pfx.GetPrivateKey(0);
-    if (pfx.get_LastMethodSuccess() != true) {
         throw 6455;
     }
-
+    
+    CkRsaW rsa;
     // Import the private key into the RSA component:
-    success = rsa.ImportPrivateKeyObj( * privKey);
+    success = rsa.ImportPrivateKeyObj(privKey);
     if (success != true) {
-        delete privKey;
         throw 6456;
     }
-
-    delete privKey;
 
     rsa.put_EncodingMode(L"base64");
 
@@ -383,16 +373,12 @@ int main(void) {
                 response.append("\t\"error\": \"An unexpected error occured while hashing the file\",\r\n");
                 res.status = 500;
                 break;
-            case 5477:
-                response.append("\t\"error\": \"An unexpected error occured while loading attestation keystore\",\r\n");
-                res.status = 500;
-                break;
             case 6455:
                 response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
                 res.status = 500;
                 break;
             case 6456:
-                response.append("\t\"error\": \"An unexpected error occured while loading attestation private key\",\r\n");
+                response.append("\t\"error\": \"An unexpected error occured while loading attestation private key into RSA object\",\r\n");
                 res.status = 500;
                 break;
             case 2973:

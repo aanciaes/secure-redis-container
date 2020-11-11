@@ -1,0 +1,212 @@
+name: secure-redis-container
+version: "0.3"
+
+# Current Session Hash - c13f1d327e82db0235432b1112339ea5e6feded4b0abef3e81f3b30d772562ca
+# Replace predecessor bellow with current hash when updating the session 
+predecessor: 3a3be42946a5c4b517f817bb19f9cbfca379184dabe4847bed43f6e87d7e1396
+
+access_policy:
+  read:
+   - CREATOR
+  update:
+   - CREATOR
+
+services:
+  - name: redis
+    image_name: redis_image
+    mrenclaves: [792233b7ef44a0e7a985f561f596a1ce449bf9150e4863e2cc29dc0653829450]
+    command: "redis-server /usr/local/etc/redis/redis.conf"
+  - name: attestation_server
+    image_name: attestation_server_image
+    mrenclaves: [a0bd510c2fce258135377f7d6869600d45c37d6658c43622ec4a2b6344bbd06d]
+    command: "/home/attestation_server/attestation-server &"
+    
+images:
+  #Redis Image
+  - name: redis_image
+    injection_files:
+      - path: /usr/local/etc/redis/redis.key
+        content: |
+          $$SCONE::redis_tls.key$$
+      - path: /usr/local/etc/redis/redis.crt
+        content: |
+          $$SCONE::redis_tls.crt$$
+  
+  # Attestation Server Image
+  - name: attestation_server_image
+    injection_files:
+      - path: /home/attestation_server/mrenclave
+        content: |
+          $$SCONE::attestation_server_mr_enclave_secret$$
+      - path: /home/redis/mrenclave
+        content: |
+          $$SCONE::redis_mr_enclave_secret$$
+      - path: /home/attestation_server/attestation-identity-key.key
+        content: |
+          $$SCONE::attestation-identity-key.key$$
+
+secrets:
+  # Redis Secrets
+  - name: redis_tls_private_key
+    kind: private-key
+    value: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDOgKN/GNv0nx9E
+      /osP/a2j4DHe3Eoru3XCz2lRo/vBhJGb+IIYKipB8FJi1fX7t1IDd45/9/4ixnGc
+      Tp2xVlv89Y86geZH+7c3SgxJdLt9vcayzXxb2yfFflXfh2sTBjKXgH6erNqX9m+7
+      hG/tFEcx/lChX1sXWkUuFMnrF9ba1c0jOPQPNu4H9RuyBvHSslxZAovH79qKhUk+
+      cUi5B/UOJSQjnHAX22lEuBwd2Q/HPajrS5XXMaHIAC/myZMqGgnVayQWOW+JNeGZ
+      DnIUvumYczoV56BOVl6IgSAoGr9kf0XVKpcRg4/b3KkOB5pWaq8j1ZCjgVl8yeXW
+      gew09AMJAgMBAAECggEBALdcsFC98SmQVYK9Bxwm5BVckMvUDaQxa4qVA26zzmty
+      XJ0DF/l/D1DHpVAPrsFZcWCUu5rTyPx1+xGRGSMLjNjb7tdD2wfV8kUM4kYjegxY
+      A+Rm4+LogbMyz+uQ4jndSfUO6t/Ymq1O7L20BnKci+9PY6c29bqRtFYLrZOr8mMS
+      1RsNnh5PDsYhFmYfcp/ii6cIRGuL2Q/udrFxQzPHmUNJBrR5qyeeoelRIpMdoyF5
+      z1QuBtuDBjXgqEFQyuIeuK7zkadg0D86W8REWf8S64az2UbQMsVWBOrNJSes6vFU
+      lsQLB+LDcfX9ovYaI3LzhOo3/3dk/+NrdaSGOFmyeNUCgYEA/h5Emp3bHJANhAA6
+      iGIO2+h65TETg4iPBbit1gT/ZBs+aKaKKyrbtfDP4mgTgdIkN3YtImrodj4BJUfU
+      iW9/XHPCAzk8thGN0ADm2nz5pk8UeJFKOol06/m3+F61kylQxAFPXTDb1DL4X2Wk
+      wJMG7DpByQQc+k5RVZfMIkMl2IcCgYEA0AgbAiaUwHFdHRfzsWrhIsrPR7oMYV9/
+      tmyoXlFAVqf5P5stcueLePXCt/226/5Fmk7fArAZbEFkqC+BH7G8vIQZvDp4uaAn
+      CGJZG55P/e+C6ISc3NfQxynABwFHACsMMXzHxxmhsJgMlY2ZaBIzYCuOYQYY2svB
+      vRysqUE6e+8CgYBkW1vInDLeUt2jlduH5QHtQyDVxs3oElQ5dDfi39JknIXHGo5S
+      gfiHH/VZerTJfk4jQR6OCx6HI/Gb4YRESq5HuseSMlaRqNkSnmiNPPHzBiQVgXuJ
+      JqPwVYycH/shhR2KauIG8ba/VOnV8vRfwTDothEo6+Dt0WQ5o1tQ5KfbnQKBgD3w
+      e+IrDJUz665y6DsGAJx0WD0Z9v+zCHqPZZ4XgRmMD9lRYbnZmRxdyCkyIJmpbp3g
+      J+RL/HXQDqFI66A9Ml3K00LJAhL6zURgy/k+LMEF5CtI+M+EboQuOR+c0MALESlW
+      5sCwMAU9cFnC/E8RRDy5Gz5mK1ZR3pBpDjui0T//AoGAFBFTw4ZW33yPKzxqunTR
+      9WoCFBV6DsCrxeaEBbfzyjzr5/34BHKQdVrrjEYy5L2u8WJeCJtz7gDiZEaza9og
+      Wt0EJ4V8Ol8IluYrbVB7LYgGOV/sOKoL/9oYIIxJ159ivOWpooOTlDIt1sMt9Ivz
+      Mr9lJbaXAlyBd3JG7qxjogI=
+      -----END PRIVATE KEY-----
+  - name: redis_tls
+    kind: x509
+    private_key: redis_tls_private_key
+    value: |
+      -----BEGIN CERTIFICATE-----
+      MIIEJDCCAwygAwIBAgIJANpLC7zFu2/kMA0GCSqGSIb3DQEBCwUAMIHIMQswCQYD
+      VQQGEwJQVDEPMA0GA1UEBwwGTGlzYm9uMS0wKwYDVQQKDCRBbmNpYWVzIFRoZXNp
+      cyBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHjAcBgNVBAsMFUFuY2lhZXMgSVQgRGVw
+      YXJ0bWVudDEtMCsGA1UEAwwkQW5jaWFlcyBUaGVzaXMgQ2VydGlmaWNhdGUgQXV0
+      aG9yaXR5MSowKAYJKoZIhvcNAQkBFhttLmFuY2lhZXNAY2FtcHVzLmZjdC51bmwu
+      cHQwHhcNMjAwNzA2MTQ0MzU2WhcNMjEwNzA2MTQ0MzU2WjCBpzELMAkGA1UEBhMC
+      UFQxETAPBgNVBAgMCFBvcnR1Z2FsMQ8wDQYDVQQHDAZMaXNib24xHDAaBgNVBAoM
+      E1RoZXNpcyBSZWRpcyBTZXJ2ZXIxKjAoBgkqhkiG9w0BCQEWG20uYW5jaWFlc0Bj
+      YW1wdXMuZmN0LnVubC5wdDEqMCgGA1UEAwwhcmVkaXMtc2VydmVyLnRoZXNpcy1z
+      ZXJ2ZXIudGhlc2lzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoCj
+      fxjb9J8fRP6LD/2to+Ax3txKK7t1ws9pUaP7wYSRm/iCGCoqQfBSYtX1+7dSA3eO
+      f/f+IsZxnE6dsVZb/PWPOoHmR/u3N0oMSXS7fb3Gss18W9snxX5V34drEwYyl4B+
+      nqzal/Zvu4Rv7RRHMf5QoV9bF1pFLhTJ6xfW2tXNIzj0DzbuB/Ubsgbx0rJcWQKL
+      x+/aioVJPnFIuQf1DiUkI5xwF9tpRLgcHdkPxz2o60uV1zGhyAAv5smTKhoJ1Wsk
+      FjlviTXhmQ5yFL7pmHM6FeegTlZeiIEgKBq/ZH9F1SqXEYOP29ypDgeaVmqvI9WQ
+      o4FZfMnl1oHsNPQDCQIDAQABozAwLjAsBgNVHREEJTAjgiFyZWRpcy1zZXJ2ZXIu
+      dGhlc2lzLXNlcnZlci50aGVzaXMwDQYJKoZIhvcNAQELBQADggEBAENazZgNk7VU
+      cXi4n+O9gFo2JNCWoUlfd8ZM1s1yEz+FP3SC1ppUQPg+B3Sx+CkKWIWh+G2E5/Yo
+      953V3ZWazlNCyw8hA5Lr8HMf9w9ZxlT5W0W0BTbF2lllQ62rPcT2QmoOQ+qJXh46
+      YelKgVkhdVJJO/7Q/onvIo8/Nh1ZVBGG0V14Tqz39SSr4VNNm173/Fkb/qiXxedR
+      MJm2vUDEEWhyH+5nslIY9XOdbpqGtSx3gyWVZJMcoCH+pwv5u/RDoIV700KkyBTW
+      Uf2BwjxHk/ur9lautaauA+AFWM7MFnlxTb09Hxr9hvpzVr3A3Goj5/+17HK/8U4D
+      mOWDahB5wbc=
+      -----END CERTIFICATE-----
+  
+  # Attestation Server Secrets
+  - name: attestation_server_mr_enclave_secret
+    kind: ascii
+    value: a0bd510c2fce258135377f7d6869600d45c37d6658c43622ec4a2b6344bbd06d 
+  - name: redis_mr_enclave_secret
+    kind: ascii
+    value: 792233b7ef44a0e7a985f561f596a1ce449bf9150e4863e2cc29dc0653829450
+  - name: attestation-identity-key-private
+    kind: private-key
+    value: |
+      -----BEGIN PRIVATE KEY-----
+      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
+      nVAZUonaRE41I2lUNIEfd3qYyzAi3Q==
+      -----END PRIVATE KEY-----
+  - name: attestation-identity-key
+    kind: x509
+    private_key: attestation-identity-key-private
+    value: |
+      -----BEGIN CERTIFICATE-----
+      MIIFaTCCBFGgAwIBAgIJANTN/2YCO2QyMA0GCSqGSIb3DQEBCwUAMIHIMQswCQYD
+      VQQGEwJQVDEPMA0GA1UEBwwGTGlzYm9uMS0wKwYDVQQKDCRBbmNpYWVzIFRoZXNp
+      cyBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHjAcBgNVBAsMFUFuY2lhZXMgSVQgRGVw
+      YXJ0bWVudDEtMCsGA1UEAwwkQW5jaWFlcyBUaGVzaXMgQ2VydGlmaWNhdGUgQXV0
+      aG9yaXR5MSowKAYJKoZIhvcNAQkBFhttLmFuY2lhZXNAY2FtcHVzLmZjdC51bmwu
+      cHQwHhcNMjAxMDAxMjA1NjE3WhcNMjExMDAxMjA1NjE3WjCBwDELMAkGA1UEBhMC
+      UFQxETAPBgNVBAgMCFBvcnR1Z2FsMQ8wDQYDVQQHDAZMaXNib24xLzAtBgNVBAoM
+      JlRoZXNpcyBSZW1vdGUgQXR0ZXN0YXRpb24gSWRlbnRpdHkgS2V5MSowKAYJKoZI
+      hvcNAQkBFhttLmFuY2lhZXNAY2FtcHVzLmZjdC51bmwucHQxMDAuBgNVBAMMJ2F0
+      dGVzdGF0aW9uLXNlcnZlci50aGVzaXMtc2VydmVyLnRoZXNpczCCAiIwDQYJKoZI
+      hvcNAQEBBQADggIPADCCAgoCggIBANX08c3j9MBm51jtDlC12TAUnR6SO3zCXjmI
+      tCFZu1aE6WH6wadGWI3+vQBxYUQSNOiw0wD98gGawZeNwfxGogcLDlkNmGknfh7B
+      FWDv4/vsifwGAafCHYp01GRaffDwIAGNXb4WbDf/4tIcCIcDUA8JcIauX5lrfS2E
+      37jGQfJ+pROdz9MAK2YCkRlJkBRcKs2sK1wfLAIQRor9IxMb7q1zzm+L/r2ZT7Pg
+      UNfymUpYOJ+H94VCxTSG3OcZYCOH7Tft16ja9dteSmgtMNIcERVs9nfkUMcgbg0M
+      qJtswUl08gPbvoNJvB4+dXVIu7rTQsUAdHl06bB/VwvamQjlPpmEXOhjt0HqTOxw
+      lHDD1VIPUIvfGIp85Ea/D0XhPwj74oGT3QyGrItvYmKWKFM/pD1miRvo72YHuXgp
+      WvJTLwI3RfndYwAyGnDUVPFAUdh+nGKSvQPa5HuRb/PLk2UTU8cTTMEczHkCl6om
+      agmArZPua0kPdtaUhToZw9os+5c9M6RqRUnw6QPui5PB+7cJxZRgudMfW+geFo7b
+      7aS2PcLAkYdev1dRXK/ShvLnlf2L2IpcE2OKuxvTcz1cOt8R1MKzk8eyV1Dn1Fvk
+      nGuiptZ61Z/rx/yEBQx1cZbMW7Vj+5zcwDcnKh/JTG0NHRX0rjtEOLe6uIr8Btcc
+      hvgkV1RRAgMBAAGjXDBaMFgGA1UdEQRRME+CJ2F0dGVzdGF0aW9uLXNlcnZlci50
+      aGVzaXMtc2VydmVyLnRoZXNpc4IJbG9jYWxob3N0ghluczMxMjQ5MjQzLmlwLTUx
+      LTIxMC0wLmV1MA0GCSqGSIb3DQEBCwUAA4IBAQBA6kGWW/EePa7K5O5fwvXfyscO
+      Pe2bd/FkJwpXIkcndNdaSo7VQtlYsYrvJ5tyjt77X8eHZJqvDHv26tsBSIy/oxbM
+      xVmLVO4T5Tq5Mt9uAS2FXlthrE2nUE0Ou26QuIEIr8fWMCvIY3WTQc1mDJ8AqBCl
+      N2tdwWzKy3EkBfk4Xl0v4AtpvDy0OtN2ucxmBuwfsniPzjeRDQ4xizVWrwEAlC13
+      WAeHeTMaefh9D6m7F+gjSJexxKD5x6zJY4b9zQlCMR6yeEMfXwU3aWiLZ/NB0ZXB
+      Dw5pJy3hXy42i7hroz4uyd2silwLMHfudLKtkojX6GVQaihN9bnHKcIlw3j7
+      -----END CERTIFICATE-----
+
+security:
+  attestation:
+    tolerate: [debug-mode, outdated-tcb]
+    ignore_advisories: ["INTEL-SA-00220", "INTEL-SA-00270", "INTEL-SA-00293", "INTEL-SA-00320", "INTEL-SA-00329"]

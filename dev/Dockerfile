@@ -1,4 +1,4 @@
-FROM sconecuratedimages/apps:redis-6-alpine
+FROM sconecuratedimages/apps:redis-6-alpine-scone4.2.1
 
 COPY attestation_server /home/attestation_server
 COPY start.sh /home/start.sh
