@@ -74,6 +74,16 @@ To add replicas just add the arugument `--cluster-replicas 1` to the commmand ab
 2. Be aware of the redis ports with the docker run command as they may change in the `redis.conf`
 3. (Temporary) Be aware of the hard-coded paths and passwords when merging code from developement to production.
 
+### CAS and LAS
+
+To enable enclave attestation some application secrets were moved to the external [Configuration and Attestation Service (CAS)](4-2-1.scone-cas.cf).
+
+This means that the redis server and the attestation server need to connect to CAS in order to start. Production environment now needs to be always in SCONE hardware mode, and a LAS system needs to be running on the same machine as the application.
+
+To run LAS on production environment run `sudo docker run --rm -p 18766:18766 --device=/dev/isgx -d --name aanciaes-las sconecuratedimages/kubernetes:las-scone4.2.1`
+
+Secrets need to be uploaded to the CAS via curl. Check the `cas` folder on production code.
+
 ## Unsecure Redis
 (https://hub.docker.com/repository/docker/aanciaes/unsecure-redis/general)
 
