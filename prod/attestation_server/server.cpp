@@ -231,6 +231,10 @@ int main(void) {
 
     std::list<long> nonceList;
 
+    svr.Get("/system/healthz", [&](const httplib::Request & req, httplib::Response & res) {
+        res.status = 200;
+    });
+
     svr.Get("/attest", [&](const httplib::Request & req, httplib::Response & res) {
 
         try {
