@@ -1,6 +1,11 @@
 # Redis Secure Server
 (https://hub.docker.com/repository/docker/aanciaes/secure-redis)
 
+[![GitHub release](https://img.shields.io/github/release/aanciaes/secure-redis-container.svg)](https://github.com/aanciaes/secure-redis-container/releases/)
+[![GitHub issues](https://img.shields.io/github/issues/aanciaes/secure-redis-container.svg)](https://github.com/aanciaes/secure-redis-container/issues/)
+![Latest Docker Hub Tag](https://img.shields.io/static/v1.svg?label=DockerLatestTagSecure&message=1.1.5&color=red)
+![Latest Docker Hub Tag](https://img.shields.io/static/v1.svg?label=DockerLatestTagUnsecure&message=1.0.0&color=red)
+
 This repository contains an implementation of the redis-server secured by Intel's SGX tecnhology with the help of the [SCONE]("https://scontain.com/index.html?lang=en") platform. It also presents an implementation of a **simulated** remote attestation server. That runs alongside the redis in order to simulate the real SGX's attestation procedure.
 
 The dev folder is supposed to be used to develop the attestation server. The prod folder contains all the production files - code, bins, tls keys and certificates, configs, passwords etc it is for production use in the OVHCloud.

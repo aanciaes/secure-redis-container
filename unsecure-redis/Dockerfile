@@ -1,4 +1,4 @@
-FROM redis:6.0-rc1
+FROM redis:6.0-rc1-alpine
 
 # Copy config file
 COPY ./redis/redis.conf /usr/local/etc/redis/redis.conf

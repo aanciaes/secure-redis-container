@@ -1,9 +1,9 @@
 name: secure-redis-container
 version: "0.3"
 
-# Current Session Hash - c13f1d327e82db0235432b1112339ea5e6feded4b0abef3e81f3b30d772562ca
+# Current Session Hash - 5b1abcc97a5b3605a5d5eb8232054c7ca4325dfb9333ecc03e188a25070f5532
 # Replace predecessor bellow with current hash when updating the session 
-predecessor: 3a3be42946a5c4b517f817bb19f9cbfca379184dabe4847bed43f6e87d7e1396
+predecessor: ddf79fc41b112e879b6ca5f5ebec949f76ec4ecf97b677783877827216bd9114
 
 access_policy:
   read:
@@ -18,7 +18,7 @@ services:
     command: "redis-server /usr/local/etc/redis/redis.conf"
   - name: attestation_server
     image_name: attestation_server_image
-    mrenclaves: [a0bd510c2fce258135377f7d6869600d45c37d6658c43622ec4a2b6344bbd06d]
+    mrenclaves: [b75392ab9d7dad6f42dbd0be0d0584951e8c95dad6ae9af60ef4ae921c712c23]
     command: "/home/attestation_server/attestation-server &"
     
 images:
@@ -111,7 +111,7 @@ secrets:
   # Attestation Server Secrets
   - name: attestation_server_mr_enclave_secret
     kind: ascii
-    value: a0bd510c2fce258135377f7d6869600d45c37d6658c43622ec4a2b6344bbd06d 
+    value: b75392ab9d7dad6f42dbd0be0d0584951e8c95dad6ae9af60ef4ae921c712c23 
   - name: redis_mr_enclave_secret
     kind: ascii
     value: 792233b7ef44a0e7a985f561f596a1ce449bf9150e4863e2cc29dc0653829450
