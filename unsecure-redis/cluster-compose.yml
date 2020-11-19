@@ -3,21 +3,42 @@ services:
 
   unsecure-redis-cluster-7000:
     container_name: unsecure-redis-cluster-7000
-    image: aanciaes/unsecure-redis:0.4-cluster
+    image: aanciaes/unsecure-redis:1.0.0-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7000
 
   unsecure-redis-cluster-7001:
     container_name: unsecure-redis-cluster-7001
-    image: aanciaes/unsecure-redis:0.4-cluster
+    image: aanciaes/unsecure-redis:1.0.0-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7001
 
   unsecure-redis-cluster-7002:
     container_name: unsecure-redis-cluster-7002
-    image: aanciaes/unsecure-redis:0.4-cluster
+    image: aanciaes/unsecure-redis:1.0.0-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7002
+
+  unsecure-redis-cluster-7003:
+    container_name: unsecure-redis-cluster-7003
+    image: aanciaes/unsecure-redis:1.0.0-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7003
+
+  unsecure-redis-cluster-7004:
+    container_name: unsecure-redis-cluster-7004
+    image: aanciaes/unsecure-redis:1.0.0-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7004
+
+  unsecure-redis-cluster-7005:
+    container_name: unsecure-redis-cluster-7005
+    image: aanciaes/unsecure-redis:1.0.0-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7005
