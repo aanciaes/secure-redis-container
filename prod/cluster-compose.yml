@@ -3,7 +3,7 @@ services:
 
   secure-redis-cluster-7000:
     container_name: secure-redis-cluster-7000
-    image: aanciaes/secure-redis:0.4.1-cluster
+    image: aanciaes/secure-redis:1.1.5-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7000
@@ -15,7 +15,7 @@ services:
 
   secure-redis-cluster-7001:
     container_name: secure-redis-cluster-7001
-    image: aanciaes/secure-redis:0.4.1-cluster
+    image: aanciaes/secure-redis:1.1.5-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7001
@@ -27,11 +27,47 @@ services:
 
   secure-redis-cluster-7002:
     container_name: secure-redis-cluster-7002
-    image: aanciaes/secure-redis:0.4.1-cluster
+    image: aanciaes/secure-redis:1.1.5-cluster
     network_mode: "host"
     environment:
       - REDIS_PORT=7002
       - REDIS_ATTESTATION_PORT=8542
+      - SCONE_FORK=1
+      - SCONE_MODE=HW
+    devices:
+      - /dev/isgx
+
+  secure-redis-cluster-7003:
+    container_name: secure-redis-cluster-7003
+    image: aanciaes/secure-redis:1.1.5-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7003
+      - REDIS_ATTESTATION_PORT=8543
+      - SCONE_FORK=1
+      - SCONE_MODE=HW
+    devices:
+      - /dev/isgx
+
+  secure-redis-cluster-7004:
+    container_name: secure-redis-cluster-7004
+    image: aanciaes/secure-redis:1.1.5-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7004
+      - REDIS_ATTESTATION_PORT=8544
+      - SCONE_FORK=1
+      - SCONE_MODE=HW
+    devices:
+      - /dev/isgx
+
+  secure-redis-cluster-7005:
+    container_name: secure-redis-cluster-7005
+    image: aanciaes/secure-redis:1.1.5-cluster
+    network_mode: "host"
+    environment:
+      - REDIS_PORT=7005
+      - REDIS_ATTESTATION_PORT=8545
       - SCONE_FORK=1
       - SCONE_MODE=HW
     devices:
