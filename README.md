@@ -1,6 +1,7 @@
 # Redis Secure Server
 (https://hub.docker.com/repository/docker/aanciaes/secure-redis)
 
+![Master Thesis](https://img.shields.io/badge/MasterThesis-Delivered-brightgreen)
 [![GitHub release](https://img.shields.io/github/release/aanciaes/secure-redis-container.svg)](https://github.com/aanciaes/secure-redis-container/releases/)
 [![GitHub issues](https://img.shields.io/github/issues/aanciaes/secure-redis-container.svg)](https://github.com/aanciaes/secure-redis-container/issues/)
 ![Latest Docker Hub Tag](https://img.shields.io/static/v1.svg?label=DockerLatestTagSecure&message=1.1.5&color=g)
